@@ -37,20 +37,11 @@
             letter-spacing: 0.1em;
         }
 
-        .mono-font {
-            font-family: 'Share Tech Mono', monospace;
-        }
+        .mono-font { font-family: 'Share Tech Mono', monospace; }
 
-        /* Sci-Fi Cut Corners */
-        .cut-corner {
-            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
-        }
-        
-        .cut-corner-top {
-            clip-path: polygon(15px 0, 100% 0, 100% 100%, 0 100%, 0 15px);
-        }
+        .cut-corner { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%); }
+        .cut-corner-top { clip-path: polygon(15px 0, 100% 0, 100% 100%, 0 100%, 0 15px); }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--imp-dark); }
         ::-webkit-scrollbar-thumb { background: var(--imp-border); }
@@ -62,7 +53,6 @@
             position: relative;
             transition: all 0.3s ease;
         }
-
         .imp-card::before {
             content: '';
             position: absolute;
@@ -73,40 +63,97 @@
             transform-origin: left;
             transition: transform 0.3s ease;
         }
-
-        .imp-card:hover::before {
-            transform: scaleX(1);
-        }
-
+        .imp-card:hover::before { transform: scaleX(1); }
         .imp-card:hover {
             border-color: #555;
             box-shadow: 0 5px 20px rgba(0,0,0,0.5);
         }
 
-        /* Navigation */
-        .nav-link {
-            transition: all 0.2s;
+        /* Dossier Card — mimics the PDF intel-file layout */
+        .dossier-card {
+            background: var(--imp-surface);
+            border: 1px solid var(--imp-border);
             position: relative;
+            transition: all 0.3s ease;
+            overflow: hidden;
         }
-        
+        .dossier-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--imp-red);
+        }
+        .dossier-card:hover { border-color: #555; box-shadow: 0 8px 30px rgba(0,0,0,0.6); }
+
+        .dossier-header {
+            background: linear-gradient(90deg, #0d0d0d 0%, #1a0808 100%);
+            border-bottom: 1px solid #2a2a2a;
+            padding: 12px 16px 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .dossier-badge {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.15em;
+            padding: 2px 8px;
+            border: 1px solid var(--imp-red);
+            color: var(--imp-red);
+            background: rgba(214,40,40,0.1);
+        }
+
+        .dossier-id {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 10px;
+            color: #555;
+            letter-spacing: 0.1em;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+        .stat-row {
+            padding: 7px 12px;
+            border-bottom: 1px solid #1e1e1e;
+            font-size: 12px;
+        }
+        .stat-row:nth-child(even) { border-left: 1px solid #1e1e1e; }
+        .stat-label {
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--imp-red);
+            font-size: 9px;
+            letter-spacing: 0.12em;
+            display: block;
+            margin-bottom: 2px;
+        }
+        .stat-value {
+            color: #ccc;
+            font-size: 11px;
+            line-height: 1.4;
+            font-family: 'Titillium Web', sans-serif;
+        }
+
+        .nav-link { transition: all 0.2s; position: relative; }
         .nav-link.active {
             color: white;
             background: linear-gradient(90deg, rgba(214,40,40,0.15) 0%, transparent 100%);
             border-left: 3px solid var(--imp-red);
         }
-        
         .nav-link.active i { color: var(--imp-red); }
-        
         .nav-link:hover:not(.active) {
             background: var(--imp-surface-light);
             border-left: 3px solid var(--text-muted);
         }
 
-        /* Tabs */
-        .tab-content {
-            display: none;
-            animation: slideFade 0.4s ease-out forwards;
-        }
+        .tab-content { display: none; animation: slideFade 0.4s ease-out forwards; }
         .tab-content.active { display: block; }
 
         @keyframes slideFade {
@@ -114,30 +161,70 @@
             100% { opacity: 1; transform: translateY(0); }
         }
 
-        /* Image hover zoom */
-        .img-container img {
-            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-        .imp-card:hover .img-container img {
-            transform: scale(1.08);
-        }
+        .img-container img { transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1); }
+        .imp-card:hover .img-container img,
+        .dossier-card:hover .img-container img { transform: scale(1.06); }
 
-        /* Mobile Sidebar Transition */
-        #sidebar {
-            transition: transform 0.3s ease-in-out;
-        }
-        
-        /* Scanline Overlay */
+        #sidebar { transition: transform 0.3s ease-in-out; }
+
         .scanlines {
-            position: fixed;
-            top: 0; left: 0; w-full h-full;
+            position: fixed; top: 0; left: 0;
             width: 100vw; height: 100vh;
             background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
             background-size: 100% 4px;
-            pointer-events: none;
-            z-index: 9999;
-            opacity: 0.3;
+            pointer-events: none; z-index: 9999; opacity: 0.3;
         }
+
+        /* Section dividers */
+        .section-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #2a2a2a;
+            padding-bottom: 10px;
+        }
+        .section-divider-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--imp-red) 0%, transparent 100%);
+        }
+
+        /* Classified stamp */
+        .classified-stamp {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%) rotate(-15deg);
+            border: 3px solid rgba(214,40,40,0.15);
+            color: rgba(214,40,40,0.12);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 0.2em;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        /* Ship stat table */
+        .ship-stat-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .ship-stat-table td { 
+            padding: 6px 10px; 
+            border: 1px solid #222; 
+            vertical-align: top;
+        }
+        .ship-stat-table th {
+            padding: 6px 10px;
+            background: #0d0d0d;
+            border: 1px solid #2a2a2a;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 9px;
+            color: var(--imp-red);
+            letter-spacing: 0.12em;
+            text-align: left;
+            font-weight: normal;
+        }
+        .ship-stat-table td { color: #bbb; }
     </style>
 </head>
 <body class="flex h-screen overflow-hidden">
@@ -154,7 +241,7 @@
         </button>
     </header>
 
-    <!-- Sidebar Navigation -->
+    <!-- Sidebar -->
     <aside id="sidebar" class="fixed md:static inset-y-0 left-0 w-72 bg-[#0a0a0a] border-r border-[#222] z-40 transform -translate-x-full md:translate-x-0 flex flex-col pt-16 md:pt-0 h-full">
         <div class="p-6 md:p-8 border-b border-[#222] hidden md:block text-center">
             <i class="fa-brands fa-galactic-senate text-5xl text-[#d62828] mb-4 drop-shadow-[0_0_8px_rgba(214,40,40,0.6)]"></i>
@@ -174,6 +261,9 @@
             <button onclick="switchTab('templars')" class="nav-link flex items-center gap-4 px-4 py-3 rounded-sm text-left text-sm display-font font-bold tracking-wider text-gray-400">
                 <i class="fa-brands fa-sith w-5 text-center"></i> IMPERIAL TEMPLARS
             </button>
+            <button onclick="switchTab('troops')" class="nav-link flex items-center gap-4 px-4 py-3 rounded-sm text-left text-sm display-font font-bold tracking-wider text-gray-400">
+                <i class="fa-solid fa-person-rifle w-5 text-center"></i> GROUND FORCES
+            </button>
             <button onclick="switchTab('armory')" class="nav-link flex items-center gap-4 px-4 py-3 rounded-sm text-left text-sm display-font font-bold tracking-wider text-gray-400">
                 <i class="fa-solid fa-crosshairs w-5 text-center"></i> IMPERIAL ARMORY
             </button>
@@ -184,17 +274,16 @@
         </div>
     </aside>
 
-    <!-- Overlay for mobile sidebar -->
+    <!-- Mobile Overlay -->
     <div id="sidebar-overlay" class="fixed inset-0 bg-black/80 z-30 hidden md:hidden backdrop-blur-sm"></div>
 
     <!-- Main Content -->
     <main class="flex-1 h-full overflow-y-auto bg-transparent relative pt-16 md:pt-0 scroll-smooth">
-        
-        <!-- OVERVIEW TAB -->
+
+        <!-- ══════════════════════════════════ OVERVIEW TAB ══════════════════════════════════ -->
         <section id="overview" class="tab-content active p-4 md:p-10 max-w-7xl mx-auto">
             <div class="w-full h-[300px] md:h-[400px] relative mb-8 cut-corner border border-[#333]">
-                <!-- Using the provided banner image -->
-                <img src="image_1ddf2c.jpg" alt="Galactic Imperium" class="w-full h-full object-cover opacity-50">
+                <img src="image_1ddf2c.jpg" alt="Galactic Imperium" class="w-full h-full object-cover opacity-50" onerror="this.src='https://placehold.co/1200x400/050505/d62828?text=GALACTIC+IMPERIUM'">
                 <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/60 to-transparent"></div>
                 <div class="absolute bottom-0 left-0 p-6 md:p-10 w-full">
                     <div class="flex items-center gap-2 mb-3">
@@ -209,7 +298,6 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-                <!-- Card 1 -->
                 <div class="imp-card p-6 md:p-8 cut-corner">
                     <i class="fa-solid fa-crown text-3xl text-[#d62828] mb-4"></i>
                     <h3 class="text-2xl font-bold text-white display-font mb-3">Rise of Draxus Thorne</h3>
@@ -217,156 +305,122 @@
                         Following Palpatine's death and Operation: Cinder, the Empire shattered. By 9 ABY, Moff Gideon's demise created a vacuum. Draxus Thorne, an Admiral-turned-Moff, seized the Shadow Council by poisoning dissenting warlords on Bastion, framing a survivor, and uniting the remnants.
                     </p>
                     <p class="text-gray-400 text-sm leading-relaxed">
-                        Thorne purged the incompetent, reclaimed Mandalore, executed remaining resistance (including Din Djarin), and declared himself Emperor. 
+                        Thorne purged the incompetent, reclaimed Mandalore, executed remaining resistance (including Din Djarin), and declared himself Emperor with Bastion as his capital.
                     </p>
                 </div>
-
-                <!-- Card 2 -->
                 <div class="imp-card p-6 md:p-8 cut-corner">
                     <i class="fa-solid fa-scale-unbalanced text-3xl text-[#d62828] mb-4"></i>
                     <h3 class="text-2xl font-bold text-white display-font mb-3">A Pragmatic Doctrine</h3>
                     <p class="text-gray-400 text-sm leading-relaxed mb-4">
-                        Thorne discarded the Tarkin Doctrine and scaled back xenophobia. The <strong>Imperial Army</strong> became a standardized defense force open to all species, while the elite <strong>Stormtrooper Corps</strong> remained restricted to humans and humanoids.
+                        Thorne discarded the Tarkin Doctrine and scaled back xenophobia. The <strong>Imperial Army</strong> became a standardized defense force open to all species, while the elite <strong>Stormtrooper Corps</strong> remained restricted to humans and humanoids — the Imperium's primary offensive fist.
                     </p>
                     <p class="text-gray-400 text-sm leading-relaxed">
                         To fuel expansion, uninhabited worlds are strip-mined using automated Ore Crawlers (World Devastators), rapidly feeding the Imperium's modernized war machine.
                     </p>
                 </div>
-
-                <!-- Card 3 Full Width -->
                 <div class="imp-card p-6 md:p-8 cut-corner lg:col-span-2 border-l-4 border-l-[#d62828]">
                     <div class="flex items-center gap-4 mb-4">
                         <i class="fa-solid fa-jedi text-3xl text-gray-600"></i>
                         <h3 class="text-2xl font-bold text-white display-font">The Fall of Skywalker (12 ABY)</h3>
                     </div>
                     <p class="text-gray-300 text-sm md:text-base leading-relaxed mb-4">
-                        Recognizing the threat of Luke Skywalker's progressive New Jedi Order on Yavin 4, Emperor Thorne launched a massive, jammer-supported invasion. To save his students from orbital bombardment and overwhelming infantry, Skywalker surrendered.
+                        Recognizing the threat of Luke Skywalker's progressive New Jedi Order on Yavin 4, Emperor Thorne launched a massive, jammer-supported invasion. To save his students from orbital bombardment and overwhelming infantry, Skywalker surrendered himself into Imperial custody.
                     </p>
                     <p class="text-gray-300 text-sm md:text-base leading-relaxed">
-                        Thorne took Skywalker to Bastion and publicly executed the Jedi Grandmaster via decapitation. This bold act crippled southern remnant morale, driving thousands into Thorne's ranks. Now, in 17 ABY, the galaxy is locked in a tense Cold War between the Imperium and the recovering New Republic.
+                        Thorne took Skywalker to Bastion and publicly executed the Jedi Grandmaster via decapitation on the HoloNet. This bold act crippled southern remnant morale, driving thousands of Imperial holdouts into Thorne's ranks. Now, in 17 ABY, the galaxy is locked in a tense Cold War between the Imperium and the recovering New Republic.
                     </p>
                 </div>
             </div>
         </section>
 
-        <!-- MILITARY STRUCTURE TAB -->
+        <!-- ══════════════════════════════════ STRUCTURE TAB ══════════════════════════════════ -->
         <section id="structure" class="tab-content p-4 md:p-10 max-w-5xl mx-auto">
             <div class="mb-10 text-center md:text-left">
                 <h2 class="text-3xl md:text-5xl font-bold text-white display-font mb-2">MILITARY STRUCTURE</h2>
-                <p class="text-gray-400">Standardized US-Doctrine Equivalent for Imperial Forces</p>
+                <p class="text-gray-400">Standardized Combat Unit Hierarchy — Galactic Imperium Ground Forces</p>
             </div>
-
             <div class="relative border-l border-[#333] ml-4 md:ml-8 space-y-8 pb-8">
-                
-                <!-- Unit Card -->
                 <div class="relative pl-8 md:pl-12">
-                    <div class="absolute -left-3.5 top-2 w-7 h-7 bg-[#121212] border-2 border-[#d62828] rounded-full flex items-center justify-center">
-                        <i class="fa-solid fa-users text-[#d62828] text-xs"></i>
-                    </div>
+                    <div class="absolute -left-3.5 top-2 w-7 h-7 bg-[#121212] border-2 border-[#d62828] rounded-full flex items-center justify-center"><i class="fa-solid fa-users text-[#d62828] text-xs"></i></div>
                     <div class="imp-card p-5 cut-corner-top">
                         <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-2">
                             <h3 class="text-xl font-bold text-white display-font">SQUAD</h3>
-                            <span class="mono-font text-[#d62828] text-sm bg-[#d62828]/10 px-2 py-1">10-12 TROOPERS</span>
+                            <span class="mono-font text-[#d62828] text-sm bg-[#d62828]/10 px-2 py-1">10–12 TROOPERS</span>
                         </div>
-                        <p class="text-gray-400 text-sm mb-2">The smallest tactical element. Composed of specialized troopers designed to operate independently. Includes heavy weapons and comms.</p>
+                        <p class="text-gray-400 text-sm mb-2">The smallest tactical element. Composed of specialized troopers designed to operate independently. Includes heavy weapons specialist, comms operator, and demolitions expert.</p>
                         <p class="text-xs text-gray-500 mono-font">LEADER: CORPORAL / SERGEANT</p>
                     </div>
                 </div>
-
-                <!-- Unit Card -->
                 <div class="relative pl-8 md:pl-12">
-                    <div class="absolute -left-3.5 top-2 w-7 h-7 bg-[#121212] border-2 border-[#d62828] rounded-full flex items-center justify-center">
-                        <i class="fa-solid fa-layer-group text-[#d62828] text-xs"></i>
-                    </div>
+                    <div class="absolute -left-3.5 top-2 w-7 h-7 bg-[#121212] border-2 border-[#d62828] rounded-full flex items-center justify-center"><i class="fa-solid fa-layer-group text-[#d62828] text-xs"></i></div>
                     <div class="imp-card p-5 cut-corner-top">
                         <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-2">
                             <h3 class="text-xl font-bold text-white display-font">PLATOON</h3>
                             <span class="mono-font text-[#d62828] text-sm bg-[#d62828]/10 px-2 py-1">~40 TROOPERS (4 SQUADS)</span>
                         </div>
-                        <p class="text-gray-400 text-sm mb-2">The basic unit for localized assaults and garrison duties. Supported by light repulsorlift vehicles.</p>
+                        <p class="text-gray-400 text-sm mb-2">The basic unit for localized assaults and garrison duties. Supported by light repulsorlift vehicles and a dedicated medic team.</p>
                         <p class="text-xs text-gray-500 mono-font">LEADER: LIEUTENANT</p>
                     </div>
                 </div>
-
-                <!-- Unit Card -->
                 <div class="relative pl-8 md:pl-12">
-                    <div class="absolute -left-3.5 top-2 w-7 h-7 bg-[#121212] border-2 border-[#d62828] rounded-full flex items-center justify-center">
-                        <i class="fa-solid fa-building-shield text-[#d62828] text-xs"></i>
-                    </div>
+                    <div class="absolute -left-3.5 top-2 w-7 h-7 bg-[#121212] border-2 border-[#d62828] rounded-full flex items-center justify-center"><i class="fa-solid fa-building-shield text-[#d62828] text-xs"></i></div>
                     <div class="imp-card p-5 cut-corner-top">
                         <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-2">
                             <h3 class="text-xl font-bold text-white display-font">COMPANY</h3>
                             <span class="mono-font text-[#d62828] text-sm bg-[#d62828]/10 px-2 py-1">~160 TROOPERS (4 PLATOONS)</span>
                         </div>
-                        <p class="text-gray-400 text-sm mb-2">A highly self-sufficient unit capable of holding key tactical objectives. Often paired with armor attachments.</p>
+                        <p class="text-gray-400 text-sm mb-2">A highly self-sufficient unit capable of holding key tactical objectives. Often paired with armor attachments and one LAAT gunship flight.</p>
                         <p class="text-xs text-gray-500 mono-font">LEADER: CAPTAIN</p>
                     </div>
                 </div>
-
-                <!-- Unit Card -->
                 <div class="relative pl-8 md:pl-12">
-                    <div class="absolute -left-3.5 top-2 w-7 h-7 bg-[#121212] border-2 border-[#d62828] rounded-full flex items-center justify-center">
-                        <i class="fa-solid fa-chess-rook text-[#d62828] text-xs"></i>
-                    </div>
+                    <div class="absolute -left-3.5 top-2 w-7 h-7 bg-[#121212] border-2 border-[#d62828] rounded-full flex items-center justify-center"><i class="fa-solid fa-chess-rook text-[#d62828] text-xs"></i></div>
                     <div class="imp-card p-5 cut-corner-top">
                         <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-2">
                             <h3 class="text-xl font-bold text-white display-font">BATTALION</h3>
-                            <span class="mono-font text-[#d62828] text-sm bg-[#d62828]/10 px-2 py-1">600-800 TROOPERS</span>
+                            <span class="mono-font text-[#d62828] text-sm bg-[#d62828]/10 px-2 py-1">600–800 TROOPERS</span>
                         </div>
-                        <p class="text-gray-400 text-sm mb-2">Primary maneuver unit for planetary invasions. Boasts dedicated artillery (AV-7) support.</p>
+                        <p class="text-gray-400 text-sm mb-2">Primary maneuver unit for planetary invasions. Boasts dedicated artillery support and integrated AT-ST walker platoon. Can sustain independent operations for weeks.</p>
                         <p class="text-xs text-gray-500 mono-font">LEADER: MAJOR / LT. COLONEL</p>
                     </div>
                 </div>
-
-                <!-- Unit Card -->
                 <div class="relative pl-8 md:pl-12">
-                    <div class="absolute -left-3.5 top-2 w-7 h-7 bg-[#121212] border-2 border-[#d62828] rounded-full flex items-center justify-center">
-                        <i class="fa-solid fa-shield-halved text-[#d62828] text-xs"></i>
-                    </div>
+                    <div class="absolute -left-3.5 top-2 w-7 h-7 bg-[#121212] border-2 border-[#d62828] rounded-full flex items-center justify-center"><i class="fa-solid fa-shield-halved text-[#d62828] text-xs"></i></div>
                     <div class="imp-card p-5 cut-corner-top">
                         <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-2">
                             <h3 class="text-xl font-bold text-white display-font">REGIMENT</h3>
-                            <span class="mono-font text-[#d62828] text-sm bg-[#d62828]/10 px-2 py-1">~2,500-3,000 TROOPERS</span>
+                            <span class="mono-font text-[#d62828] text-sm bg-[#d62828]/10 px-2 py-1">~2,500–3,000 TROOPERS</span>
                         </div>
-                        <p class="text-gray-400 text-sm mb-2">Massive combat element assigned to secure continents or garrison fortress worlds.</p>
+                        <p class="text-gray-400 text-sm mb-2">Massive combat element assigned to secure continents or garrison fortress worlds. Includes full armor company (AT-TE, AT-AT) and air support wing.</p>
                         <p class="text-xs text-gray-500 mono-font">LEADER: COLONEL</p>
                     </div>
                 </div>
-
-                <!-- Unit Card -->
                 <div class="relative pl-8 md:pl-12">
-                    <div class="absolute -left-3.5 top-2 w-7 h-7 bg-[#d62828] border-2 border-[#d62828] rounded-full flex items-center justify-center shadow-[0_0_10px_#d62828]">
-                        <i class="fa-brands fa-empire text-white text-xs"></i>
-                    </div>
+                    <div class="absolute -left-3.5 top-2 w-7 h-7 bg-[#d62828] border-2 border-[#d62828] rounded-full flex items-center justify-center shadow-[0_0_10px_#d62828]"><i class="fa-brands fa-empire text-white text-xs"></i></div>
                     <div class="imp-card p-5 cut-corner-top border border-[#d62828]/50 bg-[#d62828]/5">
                         <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-2">
                             <h3 class="text-xl font-bold text-white display-font">LEGION <span class="text-gray-500 text-base">(DIVISION EQ.)</span></h3>
                             <span class="mono-font text-white text-sm bg-[#d62828] px-2 py-1 shadow-lg">10,000+ TROOPERS</span>
                         </div>
-                        <p class="text-gray-300 text-sm mb-2">The iconic Imperial combat formation. Fully self-sustaining with integrated armor (AT-TE, AT-HA), air support (LAAT), and logistics. The fist of Emperor Thorne.</p>
+                        <p class="text-gray-300 text-sm mb-2">The iconic Imperial combat formation. Fully self-sustaining with integrated armor (AT-TE, AT-AT), air support (LAAT), scouts, and logistics trains. The armored fist of Emperor Thorne and the primary unit for all planetary conquests.</p>
                         <p class="text-xs text-[#d62828] mono-font font-bold">LEADER: BRIGADIER / MAJOR GENERAL</p>
                     </div>
                 </div>
-
-                <!-- Unit Card -->
                 <div class="relative pl-8 md:pl-12">
-                    <div class="absolute -left-3.5 top-2 w-7 h-7 bg-[#121212] border-2 border-[#d62828] rounded-full flex items-center justify-center">
-                        <i class="fa-solid fa-globe text-[#d62828] text-xs"></i>
-                    </div>
+                    <div class="absolute -left-3.5 top-2 w-7 h-7 bg-[#121212] border-2 border-[#d62828] rounded-full flex items-center justify-center"><i class="fa-solid fa-globe text-[#d62828] text-xs"></i></div>
                     <div class="imp-card p-5 cut-corner-top">
                         <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-2">
                             <h3 class="text-xl font-bold text-white display-font">SYSTEMS ARMY / SECTOR ARMY</h3>
-                            <span class="mono-font text-[#d62828] text-sm bg-[#d62828]/10 px-2 py-1">50,000 - 200,000+ TROOPERS</span>
+                            <span class="mono-font text-[#d62828] text-sm bg-[#d62828]/10 px-2 py-1">50,000–200,000+ TROOPERS</span>
                         </div>
-                        <p class="text-gray-400 text-sm mb-2">Strategic level command structures managing theaters of war across multiple star systems and sectors.</p>
+                        <p class="text-gray-400 text-sm mb-2">Strategic level command structures managing entire theaters of war across multiple star systems. Commanded from dedicated command ships and surface-side command bunkers.</p>
                         <p class="text-xs text-gray-500 mono-font">LEADER: LT. GENERAL / GENERAL</p>
                     </div>
                 </div>
-
             </div>
         </section>
 
-        <!-- TEMPLARS TAB -->
+        <!-- ══════════════════════════════════ TEMPLARS TAB ══════════════════════════════════ -->
         <section id="templars" class="tab-content p-4 md:p-10 max-w-6xl mx-auto">
             <div class="flex flex-col md:flex-row items-start md:items-center gap-6 mb-10">
                 <div class="w-20 h-20 bg-[#111] border border-[#d62828] rounded-full flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(214,40,40,0.3)]">
@@ -374,306 +428,644 @@
                 </div>
                 <div>
                     <h2 class="text-3xl md:text-5xl font-bold text-white display-font leading-tight">ORDER OF THE IMPERIAL TEMPLARS</h2>
-                    <p class="mono-font text-[#d62828] mt-1">HQ: THE GREAT TEMPLE, YAVIN 4</p>
+                    <p class="mono-font text-[#d62828] mt-1">HQ: THE GREAT TEMPLE, YAVIN 4 // EST. 12 ABY</p>
                 </div>
             </div>
-            
             <div class="imp-card p-6 md:p-10 mb-10 cut-corner bg-gradient-to-br from-[#121212] to-[#2a0808] border-[#d62828]/30 border">
                 <h3 class="text-2xl font-bold text-white mb-4 display-font">The Emperor's Shadow Hand</h3>
                 <div class="space-y-4 text-sm md:text-base text-gray-300">
-                    <p>
-                        Formed in 12 ABY by Emperor Thorne and a mysterious dark side force-sensitive mercenary (trained by an Order 66 survivor), the Imperial Templars serve as the dark counter-weight to Luke Skywalker's progressive New Jedi Order.
-                    </p>
-                    <p>
-                        Unlike the chaotic Sith of old, the Templars are heavily regimented. They act as the Imperium's ultimate enforcers and peacekeepers. They hunt down rogue warlords, eliminate terrorist cells loyal to Palpatine's fanaticism, and possess the specialized training required to kill Jedi.
-                    </p>
-                    <p>
-                        Their ranks are filled with former Imperial Inquisitors, fallen Dark Jedi, and new dark side acolytes recruited from across Imperium space. Their base of operations is the very temple they violently seized from Luke Skywalker on Yavin 4.
-                    </p>
+                    <p>Formed in 12 ABY by Emperor Thorne and a mysterious dark side force-sensitive mercenary trained by an Order 66 survivor, the Imperial Templars serve as the dark counter-weight to the New Jedi Order. Unlike the chaotic Sith of old, the Templars are heavily regimented and institutionalized.</p>
+                    <p>They act as the Imperium's ultimate enforcers and peacekeepers — hunting rogue warlords, eliminating Palpatinist terrorist cells, and deploying the specialized anti-Jedi doctrines learned from their dark side founding master. Their base: the very temple violently seized from Luke Skywalker on Yavin 4.</p>
+                    <p>Recruits are drawn from former Imperial Inquisitors, fallen Dark Jedi, dark side acolytes, and gifted force-sensitives discovered across Imperium space. All recruits undergo brutal conditioning under existing Templar Knights before being granted their distinctive black-and-crimson robes and weaponry.</p>
                 </div>
             </div>
-
-            <!-- Templar Specific Units -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="imp-card cut-corner flex flex-col h-full bg-[#0a0a0a]">
-                    <div class="h-56 img-container overflow-hidden border-b border-[#333] relative">
-                        <img src="https://lumiere-a.akamaihd.net/v1/images/sith-trooper-main_69917bd9.jpeg" alt="Templar Trooper" class="w-full h-full object-cover object-top opacity-80" onerror="this.src='https://placehold.co/600x400/111/d62828?text=TEMPLAR+TROOPER'">
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent"></div>
+                <div class="dossier-card flex flex-col h-full">
+                    <div class="dossier-header">
+                        <div>
+                            <span class="dossier-badge">ANTI-JEDI INFANTRY</span>
+                            <h4 class="text-lg font-bold text-white display-font mt-1">TEMPLAR TROOPER</h4>
+                        </div>
+                        <span class="dossier-id">FILE: TT-001</span>
                     </div>
-                    <div class="p-5 flex-1 flex flex-col">
-                        <h4 class="text-xl font-bold text-white display-font tracking-wide mb-1">TEMPLAR TROOPER</h4>
-                        <span class="mono-font text-xs text-[#d62828] mb-3 border border-[#d62828]/30 w-fit px-2 py-0.5">ANTI-JEDI INFANTRY</span>
-                        <p class="text-gray-400 text-sm leading-relaxed mt-auto">
-                            Elite infantry units attached directly to the Templar Order. Equipped with specialized force-resistant armor weaving, sonic weaponry, and slugthrowers explicitly chosen to bypass lightsaber deflection. They overwhelm force-sensitive targets through sheer volume of unblockable fire.
-                        </p>
+                    <div class="h-56 img-container overflow-hidden relative">
+                        <img src="https://lumiere-a.akamaihd.net/v1/images/sith-trooper-main_69917bd9.jpeg" alt="Templar Trooper" class="w-full h-full object-cover object-top opacity-80" onerror="this.src='https://placehold.co/600x400/111/d62828?text=TEMPLAR+TROOPER'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#121212] to-transparent"></div>
+                    </div>
+                    <div class="p-5 flex-1">
+                        <p class="text-gray-400 text-sm leading-relaxed">Elite infantry units attached directly to the Templar Order. Equipped with specialized force-resistant armor weaving, sonic weaponry, and slugthrowers explicitly chosen to bypass lightsaber deflection. They overwhelm force-sensitive targets through sheer volume of unblockable fire, saturating the battlefield with kinetic rounds while Templar Knights move in for the kill.</p>
                     </div>
                 </div>
-
-                <div class="imp-card cut-corner flex flex-col h-full bg-[#0a0a0a]">
-                    <div class="h-56 img-container overflow-hidden border-b border-[#333] relative">
-                        <img src="https://lumiere-a.akamaihd.net/v1/images/emperors-royal-guard-main_41db078a.jpeg" alt="Royal Shadow Guard" class="w-full h-full object-cover object-top opacity-80" onerror="this.src='https://placehold.co/600x400/111/d62828?text=ROYAL+SHADOW+GUARD'">
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent"></div>
+                <div class="dossier-card flex flex-col h-full">
+                    <div class="dossier-header">
+                        <div>
+                            <span class="dossier-badge">ELITE ASSASSINS</span>
+                            <h4 class="text-lg font-bold text-white display-font mt-1">ROYAL SHADOW GUARD</h4>
+                        </div>
+                        <span class="dossier-id">FILE: RSG-001</span>
                     </div>
-                    <div class="p-5 flex-1 flex flex-col">
-                        <h4 class="text-xl font-bold text-white display-font tracking-wide mb-1">ROYAL SHADOW GUARD</h4>
-                        <span class="mono-font text-xs text-[#d62828] mb-3 border border-[#d62828]/30 w-fit px-2 py-0.5">ELITE ASSASSINS</span>
-                        <p class="text-gray-400 text-sm leading-relaxed mt-auto">
-                            Covert operatives and assassins serving Emperor Thorne. Possessing latent dark side abilities trained by the Templars, they wield lightsaber pikes and utilize advanced cloaking technology. They are the unseen knives in the dark.
-                        </p>
+                    <div class="h-56 img-container overflow-hidden relative">
+                        <img src="https://lumiere-a.akamaihd.net/v1/images/emperors-royal-guard-main_41db078a.jpeg" alt="Royal Shadow Guard" class="w-full h-full object-cover object-top opacity-80" onerror="this.src='https://placehold.co/600x400/111/d62828?text=ROYAL+SHADOW+GUARD'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#121212] to-transparent"></div>
+                    </div>
+                    <div class="p-5 flex-1">
+                        <p class="text-gray-400 text-sm leading-relaxed">Covert operatives and assassins serving Emperor Thorne directly. Possessing latent dark side abilities trained by the Templars, they wield lightsaber pikes and utilize advanced personal cloaking technology for infiltration and assassination missions. They are the unseen blade in the dark — deployed when no formal military action can be acknowledged.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ARMORY TAB -->
+        <!-- ══════════════════════════════════ GROUND FORCES TAB ══════════════════════════════════ -->
+        <section id="troops" class="tab-content p-4 md:p-10 max-w-7xl mx-auto">
+
+            <div class="mb-10">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="w-3 h-3 bg-[#d62828] animate-pulse"></span>
+                    <span class="mono-font text-[#d62828] text-xs">CLASSIFICATION: COMMAND EYES ONLY</span>
+                </div>
+                <h2 class="text-3xl md:text-5xl font-bold text-white display-font mb-2">GROUND FORCES DOSSIER</h2>
+                <p class="text-gray-400">Galactic Imperium Stormtrooper Corps &amp; Imperial Army — Unit Classification Files</p>
+            </div>
+
+            <!-- ─── STORMTROOPER CORPS ─── -->
+            <div class="section-divider">
+                <i class="fa-brands fa-empire text-[#d62828]"></i>
+                <h3 class="text-xl font-bold text-white display-font tracking-widest">STORMTROOPER CORPS</h3>
+                <div class="section-divider-line"></div>
+                <span class="mono-font text-gray-600 text-xs">HUMAN / HUMANOID ONLY</span>
+            </div>
+            <p class="text-gray-500 text-sm mb-8 max-w-4xl">The elite offensive arm of the Galactic Imperium. Formed from volunteers and selected conscripts who meet rigorous physical and psychological standards. All Corps troopers operate under unified command doctrine and utilize standardized equipment upgrades inspired by First Order research recovered post-Endor. Restricted to humans and near-human humanoids per Imperial Compromise Charter 12-ABY.</p>
+
+            <div class="space-y-6">
+
+                <!-- ── 1. IMPERIAL STORMTROOPER ── -->
+                <div class="dossier-card">
+                    <div class="dossier-header relative overflow-hidden">
+                        <div>
+                            <span class="dossier-badge">STANDARD INFANTRY</span>
+                            <h4 class="text-2xl font-bold text-white display-font mt-1">IMPERIAL STORMTROOPER</h4>
+                        </div>
+                        <div class="text-right">
+                            <div class="dossier-id">FILE: SC-001 // CORPS DESIGNATION: ST-1</div>
+                            <div class="dossier-id mt-1">STATUS: ACTIVE — GALAXY-WIDE DEPLOYMENT</div>
+                        </div>
+                        <span class="classified-stamp hidden md:block">AUTHORIZED</span>
+                    </div>
+                    <div class="flex flex-col md:flex-row">
+                        <div class="md:w-64 lg:w-80 shrink-0 img-container overflow-hidden border-r border-[#222]" style="min-height:280px">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/First-Order-Stormtrooper_eb9ceee8.jpeg" alt="Imperial Stormtrooper" class="w-full h-full object-cover object-top" onerror="this.src='https://placehold.co/400x400/0a0a0a/d62828?text=STORMTROOPER'">
+                        </div>
+                        <div class="flex-1 flex flex-col">
+                            <div class="stat-grid flex-1">
+                                <div class="stat-row"><span class="stat-label">ROLE</span><span class="stat-value">Standard Offensive Infantry / Line Trooper</span></div>
+                                <div class="stat-row"><span class="stat-label">ARMOR CLASS</span><span class="stat-value">MKII Composite White — Full Body Articulated Plating</span></div>
+                                <div class="stat-row"><span class="stat-label">PRIMARY WEAPON</span><span class="stat-value">F-11D Blaster Rifle (Burst / Single / Stun)</span></div>
+                                <div class="stat-row"><span class="stat-label">SECONDARY</span><span class="stat-value">SE-44C Blaster Pistol // Imperial Thermal Detonator x2</span></div>
+                                <div class="stat-row"><span class="stat-label">HELMET SYSTEMS</span><span class="stat-value">Integrated HUD / Targeting Assist / Comms Suite / Low-Light Optics</span></div>
+                                <div class="stat-row"><span class="stat-label">SPECIAL EQUIPMENT</span><span class="stat-value">Magnetically Sealed Boot Plates / Emergency Oxygen Reservoir (10 min)</span></div>
+                                <div class="stat-row"><span class="stat-label">DEPLOYMENT CONTEXT</span><span class="stat-value">Planetary Assault / Base Security / Urban Pacification / Occupation Garrison</span></div>
+                                <div class="stat-row"><span class="stat-label">CORPS BRANCH</span><span class="stat-value">Stormtrooper Corps — General Infantry Division</span></div>
+                            </div>
+                            <div class="p-4 border-t border-[#1e1e1e]">
+                                <p class="text-gray-400 text-sm leading-relaxed">The backbone of the Galactic Imperium's offensive might and the most recognizable symbol of Imperial authority across the Northern Outer Rim. The redesigned MKII armor suite represents a significant leap over both the original Imperial stormtrooper armor and classic Clone Phase-II equipment — abandoning the latter's bulky shoulder pauldrons in favor of a sleeker, more articulated composite plating system engineered for mobility in confined shipboard and urban environments. The all-white finish is deliberate; Emperor Thorne mandated a visual break from the grime of the fallen Empire's aging armor, projecting the image of a clean, modern order. The F-11D blaster rifle features a selectable firing mode allowing single precise shots, a three-round burst for suppression, and a wide-beam stun setting for capture operations. Every Stormtrooper undergoes 18 months of intensive physical, tactical, and psychological conditioning before deployment, making them considerably more competent than the galaxy's perception of their Imperial predecessor. They are the Imperium's primary instrument of expansion and the first boots on any contested world.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── 2. STORMTROOPER OFFICER ── -->
+                <div class="dossier-card">
+                    <div class="dossier-header">
+                        <div>
+                            <span class="dossier-badge">FIELD COMMAND</span>
+                            <h4 class="text-2xl font-bold text-white display-font mt-1">STORMTROOPER OFFICER</h4>
+                        </div>
+                        <div class="text-right">
+                            <div class="dossier-id">FILE: SC-002 // CORPS DESIGNATION: ST-OFF</div>
+                            <div class="dossier-id mt-1">STATUS: ACTIVE — SQUAD / PLATOON LEVEL</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col md:flex-row">
+                        <div class="md:w-64 lg:w-80 shrink-0 img-container overflow-hidden border-r border-[#222]" style="min-height:260px">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/first-order-stormtrooper-officer_a59e2568.jpeg" alt="Stormtrooper Officer" class="w-full h-full object-cover object-top" onerror="this.style.display='none'; this.parentElement.style.background='#0d0d0d'; this.parentElement.innerHTML='<div style=\'display:flex;align-items:center;justify-content:center;height:100%;color:#333;font-family:monospace;font-size:11px;\'>ST OFFICER</div>'">
+                        </div>
+                        <div class="flex-1 flex flex-col">
+                            <div class="stat-grid flex-1">
+                                <div class="stat-row"><span class="stat-label">ROLE</span><span class="stat-value">Squad / Platoon Field Commander</span></div>
+                                <div class="stat-row"><span class="stat-label">ARMOR CLASS</span><span class="stat-value">MKII Composite White — Command Pauldron (Black)</span></div>
+                                <div class="stat-row"><span class="stat-label">PRIMARY WEAPON</span><span class="stat-value">F-11D Blaster Rifle // SE-44C Pistol</span></div>
+                                <div class="stat-row"><span class="stat-label">COMMAND GEAR</span><span class="stat-value">Enhanced Command HUD / Encrypted Long-Range Comms / Tactical Datapad</span></div>
+                                <div class="stat-row"><span class="stat-label">IDENTIFIERS</span><span class="stat-value">Black Pauldron (Sergeant), White Pauldron (Lieutenant)</span></div>
+                                <div class="stat-row"><span class="stat-label">DEPLOYMENT CONTEXT</span><span class="stat-value">Front-Line Command / Assault Leadership / Defensive Hold Coordination</span></div>
+                            </div>
+                            <div class="p-4 border-t border-[#1e1e1e]">
+                                <p class="text-gray-400 text-sm leading-relaxed">Distinguished from rank-and-file Stormtroopers by their colored pauldron shoulder armor, Officers are veteran troopers elevated through merit-based promotion within Thorne's reformed Corps. Unlike the old Empire which frequently placed commissioned officers in non-combat leadership roles, Imperium Stormtrooper Officers are expected to lead from the front. They carry enhanced command-grade HUD systems feeding them real-time tactical overlays, unit disposition readouts, and direct links to air support request channels. Their encrypted comms gear allows them to coordinate across multiple squads simultaneously, calling fire missions from AT-STs or LAAT gunships. The black pauldron denotes Sergeant-grade command of a squad (10–12 troopers), while the full white pauldron marks Platoon Lieutenants. Officers who demonstrate exceptional tactical judgment are fast-tracked into the Imperium's Officer Training Command on Bastion.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── 3. HEAVY ASSAULT TROOPER ── -->
+                <div class="dossier-card">
+                    <div class="dossier-header">
+                        <div>
+                            <span class="dossier-badge">HEAVY WEAPONS SPECIALIST</span>
+                            <h4 class="text-2xl font-bold text-white display-font mt-1">HEAVY ASSAULT STORMTROOPER</h4>
+                        </div>
+                        <div class="text-right">
+                            <div class="dossier-id">FILE: SC-003 // CORPS DESIGNATION: ST-HVY</div>
+                            <div class="dossier-id mt-1">STATUS: ACTIVE — 1 PER SQUAD</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col md:flex-row">
+                        <div class="md:w-64 lg:w-80 shrink-0 img-container overflow-hidden border-r border-[#222]" style="min-height:280px">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/fo-stormtrooper-heavy_c7d36a2b.jpeg" alt="Heavy Assault Stormtrooper" class="w-full h-full object-cover object-center" onerror="this.src='https://lumiere-a.akamaihd.net/v1/images/First-Order-Stormtrooper_eb9ceee8.jpeg'">
+                        </div>
+                        <div class="flex-1 flex flex-col">
+                            <div class="stat-grid flex-1">
+                                <div class="stat-row"><span class="stat-label">ROLE</span><span class="stat-value">Squad-Level Heavy Fire Support / Vehicle Deterrent</span></div>
+                                <div class="stat-row"><span class="stat-label">ARMOR CLASS</span><span class="stat-value">MKII Composite + Reinforced Chest and Shoulder Plating</span></div>
+                                <div class="stat-row"><span class="stat-label">PRIMARY WEAPON</span><span class="stat-value">FWMB-10B Heavy Repeating Blaster Cannon (Tripod / Shoulder-Fire)</span></div>
+                                <div class="stat-row"><span class="stat-label">SECONDARY</span><span class="stat-value">SE-44C Pistol // Fragmentation Grenades x3</span></div>
+                                <div class="stat-row"><span class="stat-label">SPECIAL EQUIPMENT</span><span class="stat-value">Deployable Tripod Mount / Reinforced Backpack Power Cell / Blast Shield Attachment</span></div>
+                                <div class="stat-row"><span class="stat-label">DEPLOYMENT CONTEXT</span><span class="stat-value">Defensive Emplacement / Bunker Assault / Anti-Vehicle Suppression / Chokepoint Control</span></div>
+                            </div>
+                            <div class="p-4 border-t border-[#1e1e1e]">
+                                <p class="text-gray-400 text-sm leading-relaxed">Every standard Stormtrooper squad is assigned one Heavy Assault specialist, whose primary duty is to project overwhelming suppressive fire and provide organic anti-armor capability at the squad level. The FWMB-10B repeating blaster cannon is a bulky but devastatingly effective weapon system capable of sustained high-volume fire that can shred light cover, suppress enemy positions, and threaten lightly armored vehicles like AT-RTs, repulsorlift scouts, and ground speeders. The weapon's tripod attachment transforms it into a static emplacement gun capable of area denial, while the shoulder-fire configuration allows the heavy trooper to advance with the squad — albeit at reduced accuracy. Their reinforced armor plating, particularly around the chest and upper shoulders, is designed to absorb stray fire while they maintain their position. Heavy troopers undergo extensive training specific to their weapon system and are among the most physically imposing members of any assault element.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── 4. SCOUT TROOPER ── -->
+                <div class="dossier-card">
+                    <div class="dossier-header">
+                        <div>
+                            <span class="dossier-badge">RECONNAISSANCE / SNIPER</span>
+                            <h4 class="text-2xl font-bold text-white display-font mt-1">IMPERIAL SCOUT TROOPER</h4>
+                        </div>
+                        <div class="text-right">
+                            <div class="dossier-id">FILE: SC-004 // CORPS DESIGNATION: ST-SCT</div>
+                            <div class="dossier-id mt-1">STATUS: ACTIVE — ATTACHED PER PLATOON</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col md:flex-row">
+                        <div class="md:w-64 lg:w-80 shrink-0 img-container overflow-hidden border-r border-[#222]" style="min-height:280px">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/scout-trooper-main_64860b74.jpeg" alt="Imperial Scout Trooper" class="w-full h-full object-cover object-top" onerror="this.src='https://placehold.co/400x400/0a0a0a/888?text=SCOUT+TROOPER'">
+                        </div>
+                        <div class="flex-1 flex flex-col">
+                            <div class="stat-grid flex-1">
+                                <div class="stat-row"><span class="stat-label">ROLE</span><span class="stat-value">Long-Range Reconnaissance / Forward Observation / Precision Elimination</span></div>
+                                <div class="stat-row"><span class="stat-label">ARMOR CLASS</span><span class="stat-value">Lightweight Partial-Coverage Composite — Optimized for Mobility</span></div>
+                                <div class="stat-row"><span class="stat-label">PRIMARY WEAPON</span><span class="stat-value">Valken-38X Sniper Rifle (1,200m Effective Range)</span></div>
+                                <div class="stat-row"><span class="stat-label">SECONDARY</span><span class="stat-value">SE-44C Pistol // Combat Knife // Snare Traps x4</span></div>
+                                <div class="stat-row"><span class="stat-label">SPECIAL EQUIPMENT</span><span class="stat-value">Enhanced Long-Range Visor / Comms Relay Pack / 74-Z Speeder Bike Assignment</span></div>
+                                <div class="stat-row"><span class="stat-label">DEPLOYMENT CONTEXT</span><span class="stat-value">Pre-Assault Recon / Perimeter Patrol / High-Value Target Elimination / Forward Spotting</span></div>
+                            </div>
+                            <div class="p-4 border-t border-[#1e1e1e]">
+                                <p class="text-gray-400 text-sm leading-relaxed">Scout Troopers are the Imperium's eyes and ears, deployed ahead of any major assault element to map terrain, identify defensive positions, and eliminate isolated sentries or command figures before the main thrust begins. Their partial-coverage lightweight armor sacrifices protection for speed and endurance — a Scout can cover terrain a fully armored line trooper cannot. Their visor systems feature multi-spectrum imaging, thermal overlay, and long-range ranging capability feeding precise targeting data to the Valken-38X, a precision blaster rifle capable of defeating personal energy shields at range. Most Scout Troopers are paired with 74-Z speeder bikes, allowing rapid repositioning across the battlefield. Scouts are among the most independently operational troopers in the Corps; they frequently operate for days in hostile territory without support, requiring a higher degree of initiative and self-sufficiency than standard line infantry.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── 5. FLAMETROOPER ── -->
+                <div class="dossier-card">
+                    <div class="dossier-header">
+                        <div>
+                            <span class="dossier-badge">INCENDIARY SPECIALIST</span>
+                            <h4 class="text-2xl font-bold text-white display-font mt-1">FLAMETROOPER</h4>
+                        </div>
+                        <div class="text-right">
+                            <div class="dossier-id">FILE: SC-005 // CORPS DESIGNATION: ST-FLM</div>
+                            <div class="dossier-id mt-1">STATUS: ACTIVE — ASSAULT PIONEER ROLE</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col md:flex-row">
+                        <div class="md:w-64 lg:w-80 shrink-0 img-container overflow-hidden border-r border-[#222]" style="min-height:280px">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/flametrooper-main_3ce8f32d.jpeg" alt="Flametrooper" class="w-full h-full object-cover object-top" onerror="this.src='https://placehold.co/400x400/0a0a0a/d62828?text=FLAMETROOPER'">
+                        </div>
+                        <div class="flex-1 flex flex-col">
+                            <div class="stat-grid flex-1">
+                                <div class="stat-row"><span class="stat-label">ROLE</span><span class="stat-value">Bunker Clearing / Anti-Cover / Area Denial / Jungle/Forest Assault</span></div>
+                                <div class="stat-row"><span class="stat-label">ARMOR CLASS</span><span class="stat-value">MKII Composite + Full-Coverage Thermal Insulation Layer</span></div>
+                                <div class="stat-row"><span class="stat-label">PRIMARY WEAPON</span><span class="stat-value">D-93 Incinerator Flamethrower (15m Effective / 25m Maximum)</span></div>
+                                <div class="stat-row"><span class="stat-label">FUEL SYSTEM</span><span class="stat-value">Twin Backmount Compressed Flame Canisters (90 Seconds Continuous Burn)</span></div>
+                                <div class="stat-row"><span class="stat-label">ARMOR UPGRADES</span><span class="stat-value">Heat-Resistant Visor Seal / Thermal Padding / Fire-Retardant Under-Suit</span></div>
+                                <div class="stat-row"><span class="stat-label">DEPLOYMENT CONTEXT</span><span class="stat-value">Entrenched Position Clearing / Denial Operations / Jungle / Fortification Breach</span></div>
+                            </div>
+                            <div class="p-4 border-t border-[#1e1e1e]">
+                                <p class="text-gray-400 text-sm leading-relaxed">One of the most feared and psychologically effective weapons in the Imperium's ground arsenal, the Flametrooper specializes in the most brutal form of close-quarters combat: rooting enemies out of fortified positions, bunkers, trenches, and dense jungle terrain where blaster fire is suppressed by cover. The D-93 Incinerator projects a sustained stream of superheated accelerant that clings to surfaces and ignites atmosphere within enclosed spaces, bypassing conventional armor plating through sheer thermal transfer. The flametrooper's own armor features substantial upgrades to thermal insulation — the helmet visor is reinforced with heat-resistant transparisteel, while a full fire-retardant under-suit protects the wearer from blowback. Flametroopers are deployed tactically as part of assault pioneer elements, typically advancing after the initial blaster exchange to flush out hardpoints that standard infantry cannot crack. The psychological impact of their presence alone often breaks enemy morale before a shot is fired.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── 6. SNOWTROOPER ── -->
+                <div class="dossier-card">
+                    <div class="dossier-header">
+                        <div>
+                            <span class="dossier-badge">COLD WEATHER OPERATIONS</span>
+                            <h4 class="text-2xl font-bold text-white display-font mt-1">SNOWTROOPER</h4>
+                        </div>
+                        <div class="text-right">
+                            <div class="dossier-id">FILE: SC-006 // CORPS DESIGNATION: ST-SNW</div>
+                            <div class="dossier-id mt-1">STATUS: ACTIVE — ENVIRONMENTAL SPECIALIST</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col md:flex-row">
+                        <div class="md:w-64 lg:w-80 shrink-0 img-container overflow-hidden border-r border-[#222]" style="min-height:280px">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/snowtrooper-main_0ec38b8e.jpeg" alt="Snowtrooper" class="w-full h-full object-cover object-top" onerror="this.src='https://placehold.co/400x400/0a0a0a/aaa?text=SNOWTROOPER'">
+                        </div>
+                        <div class="flex-1 flex flex-col">
+                            <div class="stat-grid flex-1">
+                                <div class="stat-row"><span class="stat-label">ROLE</span><span class="stat-value">Cold-Weather / Arctic / High-Altitude Environment Combat</span></div>
+                                <div class="stat-row"><span class="stat-label">ARMOR CLASS</span><span class="stat-value">MKII Composite + Thermal Polymer Shell / Environmental Seal</span></div>
+                                <div class="stat-row"><span class="stat-label">PRIMARY WEAPON</span><span class="stat-value">F-11D Blaster Rifle (Cold-Tolerant Configuration)</span></div>
+                                <div class="stat-row"><span class="stat-label">SECONDARY</span><span class="stat-value">SE-44C Pistol // Imperial Grapple Line // Thermal Pack x3</span></div>
+                                <div class="stat-row"><span class="stat-label">ARMOR UPGRADES</span><span class="stat-value">Full Hermetic Seal / Integrated Heating Coils / Polarized Snow Visor</span></div>
+                                <div class="stat-row"><span class="stat-label">DEPLOYMENT CONTEXT</span><span class="stat-value">Arctic Worlds / High Altitude / Vacuum-Adjacent / Hostile Climate Operations</span></div>
+                            </div>
+                            <div class="p-4 border-t border-[#1e1e1e]">
+                                <p class="text-gray-400 text-sm leading-relaxed">The Galactic Imperium controls swaths of the Northern Outer Rim, where ice worlds, tundra planets, and high-altitude mountain chains are common terrain. The Snowtrooper represents the Imperium's environmental specialization doctrine: rather than deploy standard troopers into lethal cold and rely on morale, certain units are permanently equipped and trained for these conditions. The Snowtrooper's distinguishing feature is the bulky thermal polymer outer shell draped over their standard MKII plating — a layered ceramic-polymer composite that traps body heat while resisting blaster bolt superheating. The face-concealing breath mask processes sub-zero air, warming it to safe inhalation temperature while filtering particulates. Their boots feature integrated crampons for ice traversal, and their weapons are configured with temperature-resistant lubricants and insulated power packs to function in environments that would render standard equipment unreliable. Standard Stormtroopers can operate briefly in cold environments; Snowtroopers thrive in them.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── 7. JET TROOPER ── -->
+                <div class="dossier-card">
+                    <div class="dossier-header">
+                        <div>
+                            <span class="dossier-badge">AERIAL ASSAULT</span>
+                            <h4 class="text-2xl font-bold text-white display-font mt-1">JET TROOPER</h4>
+                        </div>
+                        <div class="text-right">
+                            <div class="dossier-id">FILE: SC-007 // CORPS DESIGNATION: ST-JET</div>
+                            <div class="dossier-id mt-1">STATUS: ACTIVE — HIGH PRIORITY UNITS</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col md:flex-row">
+                        <div class="md:w-64 lg:w-80 shrink-0 img-container overflow-hidden border-r border-[#222]" style="min-height:280px">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/sith-jet-trooper-main_17349b6b.jpeg" alt="Jet Trooper" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/400x400/0a0a0a/d62828?text=JET+TROOPER'">
+                        </div>
+                        <div class="flex-1 flex flex-col">
+                            <div class="stat-grid flex-1">
+                                <div class="stat-row"><span class="stat-label">ROLE</span><span class="stat-value">Aerial Assault / Rapid Vertical Infiltration / Anti-Air Infantry</span></div>
+                                <div class="stat-row"><span class="stat-label">ARMOR CLASS</span><span class="stat-value">MKII Composite + Aerodynamic Pauldron Profile / Sealed Suit</span></div>
+                                <div class="stat-row"><span class="stat-label">PRIMARY WEAPON</span><span class="stat-value">SONN-BLAS SE-44C Blaster Pistol // Wrist-Mount Missile Launcher</span></div>
+                                <div class="stat-row"><span class="stat-label">PROPULSION</span><span class="stat-value">Integrated JETRC-I Jet Pack — 90 Seconds Sustained Flight / Micro-Burst Capable</span></div>
+                                <div class="stat-row"><span class="stat-label">ARMOR UPGRADES</span><span class="stat-value">Aerodynamic Pauldron / Sealed Pressure Suit / Altitude-Rated Visor</span></div>
+                                <div class="stat-row"><span class="stat-label">DEPLOYMENT CONTEXT</span><span class="stat-value">Vertical Assault / Ship Boarding / Fortification Rooftop Attack / Airfield Capture</span></div>
+                            </div>
+                            <div class="p-4 border-t border-[#1e1e1e]">
+                                <p class="text-gray-400 text-sm leading-relaxed">Jet Troopers represent one of Emperor Thorne's most significant tactical innovations, reviving and modernizing the concept of combat jump infantry last seen widely deployed in the Grand Army of the Republic era. The JETRC-I integrated jet pack system is built directly into the trooper's backplate rather than attached externally, creating a more aerodynamic profile that reduces the risk of pack damage in combat. Jet troopers are capable of true hovering flight for up to 90 continuous seconds and near-unlimited micro-burst hops for repositioning, giving them unparalleled three-dimensional mobility on the battlefield. Their signature tactic is the vertical envelopment — bypassing fortified ground-level approaches entirely by attacking from above rooftops, cliffs, or orbital drop insertions. The wrist-mount micro-missile launcher provides direct-fire anti-vehicle capability, making each Jet Trooper individually a significant threat to light armor and air defense emplacements.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── 8. RIOT CONTROL TROOPER ── -->
+                <div class="dossier-card">
+                    <div class="dossier-header">
+                        <div>
+                            <span class="dossier-badge">CIVIL CONTROL / ANTI-FORCE</span>
+                            <h4 class="text-2xl font-bold text-white display-font mt-1">RIOT CONTROL STORMTROOPER</h4>
+                        </div>
+                        <div class="text-right">
+                            <div class="dossier-id">FILE: SC-008 // CORPS DESIGNATION: ST-RCT</div>
+                            <div class="dossier-id mt-1">STATUS: ACTIVE — OCCUPATION DUTY</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col md:flex-row">
+                        <div class="md:w-64 lg:w-80 shrink-0 img-container overflow-hidden border-r border-[#222]" style="min-height:280px">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/fp-riot-control-trooper-main_5aba65e6.jpeg" alt="Riot Control Trooper" class="w-full h-full object-cover object-top" onerror="this.src='https://placehold.co/400x400/0a0a0a/888?text=RIOT+TROOPER'">
+                        </div>
+                        <div class="flex-1 flex flex-col">
+                            <div class="stat-grid flex-1">
+                                <div class="stat-row"><span class="stat-label">ROLE</span><span class="stat-value">Crowd Control / Civil Unrest Suppression / Anti-Force Engagement</span></div>
+                                <div class="stat-row"><span class="stat-label">ARMOR CLASS</span><span class="stat-value">MKII Composite + Anti-Charge Shield Bracers / Baton-Impact Reinforcement</span></div>
+                                <div class="stat-row"><span class="stat-label">PRIMARY WEAPON</span><span class="stat-value">Z6 Riot Control Baton (Paralytic Charge / Standard Strike Mode)</span></div>
+                                <div class="stat-row"><span class="stat-label">SECONDARY</span><span class="stat-value">SE-44C Stun-Configured Pistol // Dispersal Grenade x4</span></div>
+                                <div class="stat-row"><span class="stat-label">SPECIAL EQUIPMENT</span><span class="stat-value">Electrostaff Secondary Option / Portable Crowd Barrier System</span></div>
+                                <div class="stat-row"><span class="stat-label">DEPLOYMENT CONTEXT</span><span class="stat-value">Occupation Garrison / Protest Dispersal / High-Value Prisoner Escort / Anti-Jedi Contingency</span></div>
+                            </div>
+                            <div class="p-4 border-t border-[#1e1e1e]">
+                                <p class="text-gray-400 text-sm leading-relaxed">Emperor Thorne's insistence on a more palatable public face for the Imperium does not preclude the necessity of hard suppression when civilian compliance fails. The Riot Control Stormtrooper bridges the gap between lethal force and non-lethal pacification, giving local garrison commanders a proportional response tool for civil unrest that avoids the mass-casualty events Tarkin-era governors normalized. The Z6 Riot Control Baton is the defining weapon of this unit — a two-handed staff capable of delivering either a paralytic charge that temporarily incapacitates without permanent injury, or a standard high-impact strike mode for direct threat suppression. Critically, the Z6 baton's design incorporates cortosis weave in its striking surface — a rare material that can disrupt and temporarily short-circuit a lightsaber blade on contact. This was not accidental; Intelligence assessments following the Yavin 4 campaign confirmed Jedi infiltration as a realistic threat, making the Riot Control Trooper an unexpected but effective anti-Jedi contingency resource at the garrison level.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── 9. DEATH TROOPER ── -->
+                <div class="dossier-card" style="border-color:#1a1a1a;">
+                    <div class="dossier-header" style="background: linear-gradient(90deg, #050505 0%, #0d0000 100%);">
+                        <div>
+                            <span class="dossier-badge" style="border-color:#666;color:#aaa;background:rgba(100,100,100,0.1);">BLACK OPS // CLASSIFIED</span>
+                            <h4 class="text-2xl font-bold text-white display-font mt-1">DEATH TROOPER</h4>
+                        </div>
+                        <div class="text-right">
+                            <div class="dossier-id" style="color:#333;">FILE: SC-009 // CLEARANCE: ALPHA COMMAND ONLY</div>
+                            <div class="dossier-id mt-1" style="color:#555;">STATUS: ████████ — CLASSIFIED</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col md:flex-row">
+                        <div class="md:w-64 lg:w-80 shrink-0 img-container overflow-hidden border-r border-[#1a1a1a]" style="min-height:280px">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/death-trooper-main_98ddb5bf.jpeg" alt="Death Trooper" class="w-full h-full object-cover object-top" onerror="this.src='https://placehold.co/400x400/050505/333?text=CLASSIFIED'">
+                        </div>
+                        <div class="flex-1 flex flex-col">
+                            <div class="stat-grid flex-1">
+                                <div class="stat-row"><span class="stat-label">ROLE</span><span class="stat-value">VIP Protection / Black Operations / High-Value Elimination</span></div>
+                                <div class="stat-row"><span class="stat-label">ARMOR CLASS</span><span class="stat-value">Proprietary Black Composite — Full Environmental Seal / Augmentation-Fitted</span></div>
+                                <div class="stat-row"><span class="stat-label">PRIMARY WEAPON</span><span class="stat-value">DLT-19D Heavy Blaster Rifle // E-11D Blaster Carbine (CQC-Configured)</span></div>
+                                <div class="stat-row"><span class="stat-label">SECONDARY</span><span class="stat-value">SE-44C Heavy Pistol // Vibroblade // Imperial Combat Implants</span></div>
+                                <div class="stat-row"><span class="stat-label">AUGMENTATIONS</span><span class="stat-value">Sub-dermal Armor Mesh / Enhanced Reflex Stimulants / Encrypted Comms Implant</span></div>
+                                <div class="stat-row"><span class="stat-label">DEPLOYMENT CONTEXT</span><span class="stat-value">Moff Bodyguard / Intelligence Black Ops / Enemy Command Decapitation / Zero-Failure Missions</span></div>
+                            </div>
+                            <div class="p-4 border-t border-[#111]">
+                                <p class="text-gray-500 text-sm leading-relaxed">Death Troopers are the Imperium's most elite and feared ground-combat asset — the black-armored operators who appear wherever the Imperium needs a guarantee. Exact selection and augmentation protocols are classified at the Alpha Command level, but intelligence assessments suggest candidates undergo physical augmentation including sub-dermal armor mesh implants, reflex-enhancement stimulants, and encrypted neural comms that allow silent squad-level communication. Their all-black armor is fabricated from a proprietary composite alloy lighter than standard MKII plating but with superior ballistic resistance. Death Troopers serve in two capacities: as bodyguards attached to Moffs, Grand Admirals, and command-level personnel who operate in contested zones; and as offensive black operations assets deployed when the Imperium needs an action that cannot be traced back to conventional military command. Their encrypted comms make them effectively invisible on standard Imperial communication intercepts, and their combat training represents the pinnacle of what unaided human biology can achieve.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- end stormtrooper entries -->
+
+            <!-- ─── IMPERIAL GUARD ─── -->
+            <div class="section-divider mt-14">
+                <i class="fa-brands fa-empire text-[#d62828]"></i>
+                <h3 class="text-xl font-bold text-white display-font tracking-widest">IMPERIAL THRONE GUARD</h3>
+                <div class="section-divider-line"></div>
+                <span class="mono-font text-gray-600 text-xs">COMMAND AUTHORITY: EMPEROR THORNE DIRECT</span>
+            </div>
+            <p class="text-gray-500 text-sm mb-8 max-w-4xl">Distinct from and superior in authority to the Stormtrooper Corps, the Imperial Throne Guard answers exclusively to Emperor Thorne and the Imperial Palace command on Bastion. Their mandate is the protection of the Emperor, the Imperial Throne, and the most critical Imperial installations in the galaxy.</p>
+
+            <div class="space-y-6">
+
+                <!-- ── 10. ROYAL TROOPER ── -->
+                <div class="dossier-card">
+                    <div class="dossier-header" style="background: linear-gradient(90deg, #0d0505 0%, #220808 100%);">
+                        <div>
+                            <span class="dossier-badge">PALACE HEAVY INFANTRY</span>
+                            <h4 class="text-2xl font-bold text-white display-font mt-1">ROYAL TROOPER</h4>
+                        </div>
+                        <div class="text-right">
+                            <div class="dossier-id">FILE: TG-001 // AUTHORITY: THRONE COMMAND</div>
+                            <div class="dossier-id mt-1">STATUS: ACTIVE — BASTION / THRONE SHIP</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col md:flex-row">
+                        <div class="md:w-64 lg:w-80 shrink-0 img-container overflow-hidden border-r border-[#222]" style="min-height:280px">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/sith-jet-trooper-main_17349b6b.jpeg" alt="Royal Trooper" class="w-full h-full object-cover object-top opacity-90" onerror="this.src='https://placehold.co/400x400/0d0505/d62828?text=ROYAL+TROOPER'">
+                        </div>
+                        <div class="flex-1 flex flex-col">
+                            <div class="stat-grid flex-1">
+                                <div class="stat-row"><span class="stat-label">ROLE</span><span class="stat-value">Palace Defense / Imperial Installation Security / Throne Escort</span></div>
+                                <div class="stat-row"><span class="stat-label">ARMOR CLASS</span><span class="stat-value">Prestige MKIII Composite — Reinforced Full-Coverage / Crimson-Trim Distinction</span></div>
+                                <div class="stat-row"><span class="stat-label">PRIMARY WEAPON</span><span class="stat-value">F-11D Heavy Precision Blaster // Ceremonial Vibro-Lance</span></div>
+                                <div class="stat-row"><span class="stat-label">SECONDARY</span><span class="stat-value">SE-44C Pistol // Wrist-Mount Stun Charge // Combat Shield (Detachable)</span></div>
+                                <div class="stat-row"><span class="stat-label">ARMOR UPGRADES</span><span class="stat-value">Cortosis-Weave Chest / Multi-Spectrum Sensor Suite / Internal Comms Implant</span></div>
+                                <div class="stat-row"><span class="stat-label">DEPLOYMENT CONTEXT</span><span class="stat-value">Bastion Imperial Palace / Emperor's Dreadnought / Throne Room / Key Strongpoint Defense</span></div>
+                            </div>
+                            <div class="p-4 border-t border-[#1e1e1e]">
+                                <p class="text-gray-400 text-sm leading-relaxed">Royal Troopers are the prestige heavy infantry unit of the Throne Guard, distinguished by the crimson accent trim on their otherwise standard-white MKIII plating — a visual marker that carries enormous authority in the Imperial hierarchy. To be assigned as a Royal Trooper is considered the highest posting available to an enlisted Stormtrooper, requiring a minimum of five years of active corps service, an unblemished conduct record, and passage through the Palace Guard Selection Course on Bastion — a brutal evaluation covering close-quarters combat, threat assessment, loyalty verification, and advanced tactical scenarios. They are stationed permanently at key Imperial sites: the Bastion Imperial Palace, Emperor Thorne's personal dreadnought, and a handful of strategically critical fortress worlds. Their MKIII plating incorporates cortosis weave panels in the chest cavity specifically to counter lightsaber-bearing threats — a precaution that reflects lessons learned during the Yavin 4 campaign. Royal Troopers are not ceremonial; they are combat-hardened soldiers who happen to be posted to positions of enormous political sensitivity.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── 11. ROYAL PRAETORIAN GUARD ── -->
+                <div class="dossier-card">
+                    <div class="dossier-header" style="background: linear-gradient(90deg, #1a0000 0%, #3a0000 100%);">
+                        <div>
+                            <span class="dossier-badge" style="border-color:#d62828;color:#ff4040;background:rgba(214,40,40,0.2);">EMPEROR'S PERSONAL GUARD</span>
+                            <h4 class="text-2xl font-bold text-[#d62828] display-font mt-1">ROYAL PRAETORIAN GUARD</h4>
+                        </div>
+                        <div class="text-right">
+                            <div class="dossier-id">FILE: TG-002 // AUTHORITY: EMPEROR DIRECT</div>
+                            <div class="dossier-id mt-1 text-[#d62828]/60">STATUS: ACTIVE — 8 GUARDS IN EXISTENCE</div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col md:flex-row">
+                        <div class="md:w-64 lg:w-80 shrink-0 img-container overflow-hidden border-r border-[#2a0000]" style="min-height:280px">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/elite-praetorian-guard-main_e65d8dd9.jpeg" alt="Royal Praetorian Guard" class="w-full h-full object-cover object-top" onerror="this.src='https://placehold.co/400x400/1a0000/d62828?text=PRAETORIAN+GUARD'">
+                        </div>
+                        <div class="flex-1 flex flex-col">
+                            <div class="stat-grid flex-1">
+                                <div class="stat-row"><span class="stat-label">ROLE</span><span class="stat-value">Emperor's Last Line / Personal Bodyguard / Throne Room Defense</span></div>
+                                <div class="stat-row"><span class="stat-label">ARMOR CLASS</span><span class="stat-value">Crimson Duraplast Full-Coverage — Impervious to Glancing Saber Contact</span></div>
+                                <div class="stat-row"><span class="stat-label">WEAPONS — GUARD VARIANT A</span><span class="stat-value">Vibro-Voulge // Heavy Energy Shields</span></div>
+                                <div class="stat-row"><span class="stat-label">WEAPONS — GUARD VARIANT B</span><span class="stat-value">Vibro-Arbir Blade (Dual) // Paired Energy Shields</span></div>
+                                <div class="stat-row"><span class="stat-label">WEAPONS — GUARD VARIANT C</span><span class="stat-value">Electro-Bisento (Two-Handed) // Wrist Launchers</span></div>
+                                <div class="stat-row"><span class="stat-label">TRAINING LEVEL</span><span class="stat-value">EXTREME — Lifetime Combat Masters / Saber-Capable Hand-to-Hand</span></div>
+                                <div class="stat-row"><span class="stat-label">DEPLOYMENT CONTEXT</span><span class="stat-value">Emperor's Immediate Presence ONLY — Throne Room / Diplomatic Meetings / Executions</span></div>
+                                <div class="stat-row"><span class="stat-label">TOTAL ACTIVE</span><span class="stat-value">8 Guards (Replaced only upon death or Emperor's discretion)</span></div>
+                            </div>
+                            <div class="p-4 border-t border-[#1a0000]">
+                                <p class="text-[#c87878] text-sm leading-relaxed">There are only ever eight Royal Praetorian Guards in existence. They are Emperor Thorne's final, absolute line of defense — the crimson wall that stands between the Emperor and any threat that has survived everything else the Imperium can bring to bear. Unlike the Royal Troopers who carry blasters, the Praetorian Guard are exclusively melee combatants: each Guard carries one of three specialized weapon configurations from an arsenal of vibro-edged polearms, dual electro-blades, or two-handed energy bisento. Their full-coverage crimson duraplast plating is engineered to withstand prolonged blaster fire and glancing lightsaber contact without penetration, making them uniquely capable of standing against Force-sensitive opponents long enough for suppression. They do not speak in the Emperor's presence. They do not receive orders in the Emperor's presence. They are silent extensions of Thorne's will, trained from selection through decades of combat mastery until their reactions transcend conscious thought. Each guard's weapon variant is specialized, meaning in combination the eight-guard formation presents a near-complete threat matrix that no single combatant — including most Jedi — can defeat alone. The last time Palpatine's equivalent formation faced a single combatant, Endor happened. Emperor Thorne has made certain these guards are considerably more dangerous than their predecessors.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- end throne guard entries -->
+
+        </section>
+
+        <!-- ══════════════════════════════════ ARMORY TAB ══════════════════════════════════ -->
         <section id="armory" class="tab-content p-4 md:p-10 max-w-7xl mx-auto">
             <div class="mb-10">
                 <h2 class="text-3xl md:text-5xl font-bold text-white display-font mb-2">IMPERIAL ARMORY</h2>
-                <p class="text-gray-400">Visual database of the primary vehicles, vessels, and infantry.</p>
+                <p class="text-gray-400">Naval vessels and ground armor — Galactic Imperium military hardware database</p>
             </div>
 
-            <!-- INFANTRY -->
-            <div class="mb-12">
-                <div class="flex items-center gap-3 mb-6 border-b border-[#333] pb-2">
-                    <i class="fa-solid fa-person-rifle text-[#d62828] text-xl"></i>
-                    <h3 class="text-2xl font-bold text-white display-font">INFANTRY CORPS</h3>
-                </div>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                    <!-- Standard Stormtrooper (FO Look) -->
-                    <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a]">
-                        <div class="h-48 img-container overflow-hidden border-b border-[#333]">
-                            <img src="https://lumiere-a.akamaihd.net/v1/images/First-Order-Stormtrooper_eb9ceee8.jpeg" alt="Imperial Stormtrooper" class="w-full h-full object-cover object-top" onerror="this.src='https://placehold.co/400x300/111/fff?text=STORMTROOPER'">
-                        </div>
-                        <div class="p-4">
-                            <h4 class="font-bold text-white display-font text-lg leading-tight mb-1">IMPERIAL STORMTROOPER</h4>
-                            <p class="text-xs text-gray-400">Modernized armor suite based on First Order aesthetics. Forms the backbone of the elite human/humanoid offensive force.</p>
-                        </div>
-                    </div>
-
-                    <!-- Scout Trooper -->
-                    <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a]">
-                        <div class="h-48 img-container overflow-hidden border-b border-[#333]">
-                            <img src="https://lumiere-a.akamaihd.net/v1/images/scout-trooper-main_64860b74.jpeg" alt="Imperial Scout Trooper" class="w-full h-full object-cover object-top" onerror="this.src='https://placehold.co/400x300/111/fff?text=SCOUT+TROOPER'">
-                        </div>
-                        <div class="p-4">
-                            <h4 class="font-bold text-white display-font text-lg leading-tight mb-1">SCOUT TROOPER</h4>
-                            <p class="text-xs text-gray-400">Lightly armored infantry utilized for reconnaissance, sniping, and rapid speeder bike traversal.</p>
-                        </div>
-                    </div>
-
-                    <!-- Death Trooper -->
-                    <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a]">
-                        <div class="h-48 img-container overflow-hidden border-b border-[#333]">
-                            <img src="https://lumiere-a.akamaihd.net/v1/images/death-trooper-main_98ddb5bf.jpeg" alt="Death Trooper" class="w-full h-full object-cover object-top" onerror="this.src='https://placehold.co/400x300/111/fff?text=DEATH+TROOPER'">
-                        </div>
-                        <div class="p-4">
-                            <h4 class="font-bold text-white display-font text-lg leading-tight mb-1">DEATH TROOPER</h4>
-                            <p class="text-xs text-gray-400">Classified, physically augmented operatives. Serve as bodyguards for Moffs and execute ruthless black-ops strike missions.</p>
-                        </div>
-                    </div>
-
-                    <!-- Praetorian Guard -->
-                    <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a]">
-                        <div class="h-48 img-container overflow-hidden border-b border-[#333]">
-                            <img src="https://lumiere-a.akamaihd.net/v1/images/elite-praetorian-guard-main_e65d8dd9.jpeg" alt="Royal Pretorian Guard" class="w-full h-full object-cover object-top" onerror="this.src='https://placehold.co/400x300/111/d62828?text=PRAETORIAN+GUARD'">
-                        </div>
-                        <div class="p-4">
-                            <h4 class="font-bold text-[#d62828] display-font text-lg leading-tight mb-1">ROYAL PRAETORIAN GUARD</h4>
-                            <p class="text-xs text-gray-400">Emperor Thorne's ultimate protectors. Clad in heavy crimson plating impervious to glancing lightsaber blows.</p>
-                        </div>
-                    </div>
-
-                    <!-- Royal Trooper (Custom) -->
-                    <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a]">
-                        <div class="h-48 img-container overflow-hidden border-b border-[#333]">
-                            <img src="https://lumiere-a.akamaihd.net/v1/images/sith-jet-trooper-main_17349b6b.jpeg" alt="Royal Trooper" class="w-full h-full object-cover object-top" onerror="this.src='https://placehold.co/400x300/111/d62828?text=ROYAL+TROOPER'">
-                        </div>
-                        <div class="p-4">
-                            <h4 class="font-bold text-[#d62828] display-font text-lg leading-tight mb-1">ROYAL TROOPER</h4>
-                            <p class="text-xs text-gray-400">Prestigious heavy-infantry guard. Stationed exclusively on the capital world of Bastion and the Emperor's dreadnought.</p>
-                        </div>
-                    </div>
-                </div>
+            <!-- ─── IMPERIAL NAVY ─── -->
+            <div class="section-divider">
+                <i class="fa-brands fa-space-awesome text-[#d62828]"></i>
+                <h3 class="text-xl font-bold text-white display-font tracking-widest">IMPERIAL NAVY</h3>
+                <div class="section-divider-line"></div>
             </div>
 
-            <!-- NAVY -->
-            <div class="mb-12">
-                <div class="flex items-center gap-3 mb-6 border-b border-[#333] pb-2">
-                    <i class="fa-brands fa-space-awesome text-[#d62828] text-xl"></i>
-                    <h3 class="text-2xl font-bold text-white display-font">IMPERIAL NAVY</h3>
-                </div>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
-                    
-                    <!-- Star Destroyer -->
-                    <div class="imp-card cut-corner lg:col-span-2 flex flex-col bg-[#0a0a0a]">
-                        <div class="h-64 img-container overflow-hidden border-b border-[#333] relative">
-                            <img src="https://lumiere-a.akamaihd.net/v1/images/First-Order-Star-Destroyer-Main_5b94bb71.jpeg" alt="Imperial III Star Destroyer" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/800x400/111/fff?text=IMP+III+STAR+DESTROYER'">
-                            <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent"></div>
-                            <div class="absolute bottom-4 left-4">
-                                <span class="bg-[#d62828] text-white mono-font text-xs px-2 py-1">CAPITAL SHIP</span>
-                            </div>
+            <div class="space-y-6 mb-14">
+                <!-- Imperial III Star Destroyer -->
+                <div class="dossier-card">
+                    <div class="dossier-header">
+                        <div><span class="dossier-badge">CAPITAL SHIP — STAR DESTROYER</span><h4 class="text-2xl font-bold text-white display-font mt-1">IMPERIAL III-CLASS STAR DESTROYER</h4></div>
+                        <div class="text-right"><div class="dossier-id">FILE: NV-001 // MANUFACTURER: KUAT DRIVE YARDS</div></div>
+                    </div>
+                    <div class="flex flex-col md:flex-row">
+                        <div class="flex-1 img-container overflow-hidden border-b md:border-b-0 md:border-r border-[#222]" style="min-height:280px">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/First-Order-Star-Destroyer-Main_5b94bb71.jpeg" alt="Imperial III Star Destroyer" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/800x400/050505/d62828?text=IMP+III+DESTROYER'">
                         </div>
-                        <div class="p-5">
-                            <h4 class="font-bold text-white display-font text-2xl mb-2">IMPERIAL III STAR DESTROYER</h4>
-                            <p class="text-sm text-gray-400">
-                                The culmination of Imperial naval engineering. Integrates vast automation requiring 40% less crew than its predecessors. Features shielded command structures, advanced deflector arrays, and heavily modified octuple barbette turbolasers.
-                            </p>
+                        <div class="md:w-80 lg:w-96 shrink-0">
+                            <table class="ship-stat-table">
+                                <tr><th>LENGTH</th><td>1,600 Meters</td></tr>
+                                <tr><th>HYPERDRIVE</th><td>Class 1 Primary / Class 15 Backup</td></tr>
+                                <tr><th>CREW</th><td>9,235 (40% reduction via automation)</td></tr>
+                                <tr><th>TROOPS</th><td>2,150 Stormtroopers</td></tr>
+                                <tr><th>COMPLEMENT</th><td>72 TIE/fo Fighters, 24 TIE/D Automated, 18 Bombers, 12 LAAT/I Gunships, 8 Walkers</td></tr>
+                                <tr><th>ARMAMENT</th><td>Octuple Barbette Turbolasers (8x), Heavy Ion Cannons (6x), Point Defense Batteries (32x), Assault Torpedo Tubes (4x)</td></tr>
+                                <tr><th>SHIELDING</th><td>Reinforced Deflector Array — 400% improvement on ISD-II</td></tr>
+                                <tr><th>SPECIAL FEATURES</th><td>Shielded Command Tower, Advanced Sensor Array, Fleet Battle Control</td></tr>
+                            </table>
                         </div>
                     </div>
-
-                    <!-- Small Ships Stack -->
-                    <div class="flex flex-col gap-4 md:gap-6">
-                        <!-- Nebulon B -->
-                        <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a] flex-1">
-                            <div class="h-32 img-container overflow-hidden border-b border-[#333]">
-                                <img src="https://lumiere-a.akamaihd.net/v1/images/nebulon-b-frigate-main_474f32e2.jpeg" alt="Imperial Nebulon B" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/400x200/111/fff?text=NEBULON-B'">
-                            </div>
-                            <div class="p-3">
-                                <h4 class="font-bold text-white display-font text-lg mb-1">IMPERIAL NEBULON-B</h4>
-                                <p class="text-xs text-gray-400">Heavily armored refit of the classic frigate, serving as the premier anti-starfighter escort.</p>
-                            </div>
-                        </div>
-
-                        <!-- TIE/fo -->
-                        <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a] flex-1">
-                            <div class="h-32 img-container overflow-hidden border-b border-[#333]">
-                                <img src="https://lumiere-a.akamaihd.net/v1/images/First-Order-TIE-Fighter_f2e825a1.jpeg" alt="TIE/fo Fighter" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/400x200/111/fff?text=TIE/FO'">
-                            </div>
-                            <div class="p-3">
-                                <h4 class="font-bold text-white display-font text-lg mb-1">TIE/fo SPACE SUPERIORITY</h4>
-                                <p class="text-xs text-gray-400">Modernized TIE equipped with onboard deflector shields and a specialized sensor array.</p>
-                            </div>
-                        </div>
-                        
-                        <!-- TIE/D -->
-                        <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a] flex-1">
-                            <div class="h-32 img-container overflow-hidden border-b border-[#333]">
-                                <img src="https://lumiere-a.akamaihd.net/v1/images/tie-striker-main_1739f7dc.jpeg" alt="TIE/D Automated Fighter" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/400x200/111/fff?text=TIE/D+AUTOMATED'">
-                            </div>
-                            <div class="p-3">
-                                <h4 class="font-bold text-white display-font text-lg mb-1">TIE/D AUTOMATED</h4>
-                                <p class="text-xs text-gray-400">Next-gen droid starfighter. Unburdened by life-support, maneuvering at G-forces fatal to organics.</p>
-                            </div>
-                        </div>
+                    <div class="p-5 border-t border-[#1e1e1e]">
+                        <p class="text-gray-400 text-sm leading-relaxed">The culmination of three decades of Imperial naval engineering, the Imperial III-class Star Destroyer is the prestige warship of the Galactic Imperium's fleet and the most feared vessel-class in the northern galaxy. The ISD-III corrects nearly every significant flaw of its predecessor line: the exposed command tower has been reinforced and fully shielded, ending the critical vulnerability that New Republic starfighters exploited at Endor and Jakku. Crew requirements have been slashed by roughly forty percent through a pervasive automation doctrine integrating advanced droid-assisted fire control, automated damage control systems, and networked sensor fusion that allows a smaller command team to exercise equivalent battlefield awareness to the bloated crews of ISD-I and ISD-II vessels. The massive octuple barbette turbolasers — rebuilt on First Order research data — project enough destructive energy to threaten capital ships at ranges that place the Destroyer itself beyond most standard battery effective range. A fully operational ISD-III is considered by New Republic intelligence analysts to be the single most capable capital ship in the known galaxy outside of the largest Mon Calamari cruisers.</p>
                     </div>
                 </div>
-            </div>
 
-            <!-- GROUND ARMOR -->
-            <div class="mb-12">
-                <div class="flex items-center gap-3 mb-6 border-b border-[#333] pb-2">
-                    <i class="fa-solid fa-truck-monster text-[#d62828] text-xl"></i>
-                    <h3 class="text-2xl font-bold text-white display-font">GROUND ARMOR & SUPPORT</h3>
+                <!-- Ships in a 2-column grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                    <!-- Nebulon-B -->
+                    <div class="dossier-card">
+                        <div class="dossier-header"><div><span class="dossier-badge">ESCORT FRIGATE</span><h4 class="text-xl font-bold text-white display-font mt-1">IMPERIAL NEBULON-B FRIGATE</h4></div><div class="dossier-id text-right">NV-002</div></div>
+                        <div class="h-48 img-container overflow-hidden border-b border-[#222]">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/nebulon-b-frigate-main_474f32e2.jpeg" alt="Nebulon-B Frigate" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/600x300/050505/888?text=NEBULON-B'">
+                        </div>
+                        <div class="p-1">
+                            <table class="ship-stat-table">
+                                <tr><th>LENGTH</th><td>300 Meters</td><th>HYPERDRIVE</th><td>Class 2</td></tr>
+                                <tr><th>CREW</th><td>920</td><th>COMPLEMENT</th><td>24 TIE Fighters, 4 Gunships</td></tr>
+                                <tr><th>ARMAMENT</th><td colspan="3">12 Turbolaser Batteries, 12 Laser Cannons, 2 Tractor Beams</td></tr>
+                            </table>
+                        </div>
+                        <div class="p-4 border-t border-[#1e1e1e]">
+                            <p class="text-gray-400 text-xs leading-relaxed">Heavily armored refit of the classic EF76 Nebulon-B design, serving as the Imperium's premier anti-starfighter escort frigate. The refit addresses the original's notorious structural vulnerability at the boom section with internal reinforcement bracing, and replaces its dated fire control with modern target-tracking suites capable of tracking multiple small craft simultaneously. Standard assignment is 2–4 frigates per Star Destroyer battlegroup, providing a defensive perimeter against starfighter strikes and bomber runs on the capital vessel.</p>
+                        </div>
+                    </div>
+
+                    <!-- Imperial III Star Destroyer Dreadnought variant -->
+                    <div class="dossier-card">
+                        <div class="dossier-header"><div><span class="dossier-badge">SPACE SUPERIORITY FIGHTER</span><h4 class="text-xl font-bold text-white display-font mt-1">TIE/fo SPACE SUPERIORITY FIGHTER</h4></div><div class="dossier-id text-right">NV-003</div></div>
+                        <div class="h-48 img-container overflow-hidden border-b border-[#222]">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/First-Order-TIE-Fighter_f2e825a1.jpeg" alt="TIE/fo Fighter" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/600x300/050505/888?text=TIE+FO'">
+                        </div>
+                        <div class="p-1">
+                            <table class="ship-stat-table">
+                                <tr><th>LENGTH</th><td>6.69 Meters</td><th>CREW</th><td>1 Pilot</td></tr>
+                                <tr><th>MAX SPEED</th><td>1,450 km/h (atm)</td><th>SHIELDS</th><td>Onboard Deflector (First Order Recovery)</td></tr>
+                                <tr><th>ARMAMENT</th><td colspan="3">2x Heavy Laser Cannons (Wing-Mounted) // Sensor Jamming Array</td></tr>
+                            </table>
+                        </div>
+                        <div class="p-4 border-t border-[#1e1e1e]">
+                            <p class="text-gray-400 text-xs leading-relaxed">The TIE/fo represents a leap beyond the Empire's original TIE/ln, incorporating an onboard deflector shield system sourced from recovered First Order research data — a capability the old Empire deliberately withheld from pilots to make them expendable. The shield generator adds bulk and reduces its raw speed marginally against the classic TIE, but makes the TIE/fo a vastly more durable combatant, significantly improving pilot survival rates in contested engagements. Emperor Thorne's morale-conscious reform doctrine demanded this change, reasoning that experienced pilots are an irreplaceable asset worth protecting. Every TIE/fo pilot aboard an Imperium carrier has cleared the same psychological screening as Stormtrooper Corps candidates.</p>
+                        </div>
+                    </div>
+
+                    <!-- TIE/D Automated -->
+                    <div class="dossier-card">
+                        <div class="dossier-header"><div><span class="dossier-badge">AUTOMATED DROID FIGHTER</span><h4 class="text-xl font-bold text-white display-font mt-1">TIE/D AUTOMATED FIGHTER</h4></div><div class="dossier-id text-right">NV-004</div></div>
+                        <div class="h-48 img-container overflow-hidden border-b border-[#222]">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/tie-striker-main_1739f7dc.jpeg" alt="TIE/D Automated" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/600x300/050505/888?text=TIE+D+AUTOMATED'">
+                        </div>
+                        <div class="p-1">
+                            <table class="ship-stat-table">
+                                <tr><th>LENGTH</th><td>7.2 Meters</td><th>CREW</th><td>None — Droid AI</td></tr>
+                                <tr><th>G-LIMIT</th><td>Unlimited (No Pilot)</td><th>SHIELDS</th><td>None</td></tr>
+                                <tr><th>ARMAMENT</th><td colspan="3">4x Laser Cannons // AI Targeting System — No reaction delay</td></tr>
+                            </table>
+                        </div>
+                        <div class="p-4 border-t border-[#1e1e1e]">
+                            <p class="text-gray-400 text-xs leading-relaxed">The TIE/D sacrifices the pilot-preservation philosophy of the TIE/fo for pure, unflinching combat performance. Carrying no life-support, no ejection system, and no biological limitation, the TIE/D's AI can execute maneuvers at G-forces that would kill a human pilot outright, and its reaction time in targeting solutions operates at machine speed. It is deployed in mass swarms ahead of piloted TIE/fo formations, overwhelming enemy fighter screens through attrition while the crewed craft engage priority targets. The Imperium's heavy investment in automation philosophy across its military makes the TIE/D a natural fit; it represents the galaxy's first successful large-scale deployment of autonomous combat starfighters since the Confederate Droid tri-fighter era, without the networked vulnerability that made CIS droid armies fragile.</p>
+                        </div>
+                    </div>
+
+                    <!-- AT-AT -->
+                    <div class="dossier-card">
+                        <div class="dossier-header"><div><span class="dossier-badge">HEAVY WALKER — ASSAULT</span><h4 class="text-xl font-bold text-white display-font mt-1">AT-AT HEAVY ASSAULT WALKER</h4></div><div class="dossier-id text-right">GV-001</div></div>
+                        <div class="h-48 img-container overflow-hidden border-b border-[#222]">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/first-order-heavy-assault-walker-main_1a5511b8.jpeg" alt="AT-AT Walker" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/600x300/050505/888?text=AT-AT'">
+                        </div>
+                        <div class="p-1">
+                            <table class="ship-stat-table">
+                                <tr><th>HEIGHT</th><td>22.5 Meters</td><th>TOP SPEED</th><td>60 km/h</td></tr>
+                                <tr><th>CREW</th><td>4 + 40 Troops</td><th>ARMOR</th><td>Reinforced Durasteel — Blaster-Resistant Hull</td></tr>
+                                <tr><th>ARMAMENT</th><td colspan="3">2x Medium Laser Cannons (Neck), 2x Heavy Laser Cannons (Chin), 1x Medium Blaster (Rear)</td></tr>
+                            </table>
+                        </div>
+                        <div class="p-4 border-t border-[#1e1e1e]">
+                            <p class="text-gray-400 text-xs leading-relaxed">Emperor Thorne's modernized AT-AT retains the iconic four-legged silhouette that defined Imperial ground power for decades, but incorporates substantial systems upgrades learned from post-Endor battlefield analysis. The neck-mounted laser cannons have been upgraded to medium-grade energy output to improve anti-infantry capability, the hull plating has been reinforced against Rebel-era anti-armor tactics including the grapple-cable attack vector that famously felled AT-ATs at Hoth. The troop bay can carry a full forty Stormtroopers and deploys them via ventral boarding ramps rather than the original's vulnerable chin-descent cables. Psychologically, the AT-AT walker remains one of the most effective terror weapons in the Imperium's arsenal: few planetary defense forces can resist the sight of a line of these behemoths walking toward their position.</p>
+                        </div>
+                    </div>
+
+                </div><!-- end 2-col grid -->
+
+                <!-- AT-ST full width -->
+                <div class="dossier-card">
+                    <div class="dossier-header">
+                        <div><span class="dossier-badge">LIGHT WALKER — FIRE SUPPORT</span><h4 class="text-2xl font-bold text-white display-font mt-1">AT-ST SCOUT WALKER</h4></div>
+                        <div class="dossier-id text-right">FILE: GV-002 // MANUFACTURER: KUAT DRIVE YARDS</div>
+                    </div>
+                    <div class="flex flex-col md:flex-row">
+                        <div class="md:w-72 lg:w-96 shrink-0 img-container overflow-hidden border-b md:border-b-0 md:border-r border-[#222]" style="min-height:240px">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/first-order-at-st-main_4070a7df.jpeg" alt="AT-ST Scout Walker" class="w-full h-full object-cover object-top" onerror="this.src='https://placehold.co/600x400/050505/888?text=AT-ST'">
+                        </div>
+                        <div class="flex-1 flex flex-col">
+                            <div class="p-1 flex-1">
+                                <table class="ship-stat-table w-full">
+                                    <tr><th>HEIGHT</th><td>8.6 Meters</td><th>TOP SPEED</th><td>90 km/h</td></tr>
+                                    <tr><th>CREW</th><td>2 (Pilot + Gunner)</td><th>PASSENGERS</th><td>None</td></tr>
+                                    <tr><th>CHIN WEAPONS</th><td colspan="3">Twin Blaster Cannon (Primary) // Concussion Grenade Launcher (Side-Mount)</td></tr>
+                                    <tr><th>ARMOR CLASS</th><td colspan="3">Reinforced Leg Armor — Anti-Cable / Anti-Entangle Treatment on Lower Joints</td></tr>
+                                    <tr><th>SPECIAL FEATURES</th><td colspan="3">Urban Combat Sensor Package / Enhanced Night Vision / IFF Transponder</td></tr>
+                                </table>
+                            </div>
+                            <div class="p-4 border-t border-[#1e1e1e]">
+                                <p class="text-gray-400 text-sm leading-relaxed">The Imperium's AT-ST carries significant upgrades over the Empire's original design, directly addressing the tactical embarrassment of their performance in the Endor campaign. The lower leg joints now feature anti-entangle armor plating and cable-cutter tools that prevent the grapple-cable attacks that neutralized walkers against Rebel forces and Ewoks. Urban combat variants carry a dedicated sensor package for building identification, civilian-military signature differentiation, and IFF targeting to prevent friendly fire incidents in occupied cities. The AT-ST's role in the Imperium is primarily fire support for advancing infantry and urban pacification, moving ahead of Stormtrooper lines to engage fortified positions and armored vehicles that infantry weapons cannot crack. Its two-man crew system — pilot and dedicated gunner — improves target acquisition compared to the single-operator systems on early Imperial designs.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                    
-                    <!-- AT-TE -->
-                    <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a]">
-                        <div class="h-48 img-container overflow-hidden border-b border-[#333]">
-                            <img src="https://lumiere-a.akamaihd.net/v1/images/AT-TE-con_5da149c4.jpeg" alt="Imperial AT-TE" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300/111/fff?text=IMPERIAL+AT-TE'">
+
+                <!-- LAAT Gunship -->
+                <div class="dossier-card">
+                    <div class="dossier-header">
+                        <div><span class="dossier-badge">ASSAULT GUNSHIP — AIR/GROUND SUPPORT</span><h4 class="text-2xl font-bold text-white display-font mt-1">IMPERIAL LAAT/i GUNSHIP</h4></div>
+                        <div class="dossier-id text-right">FILE: GV-003 // MANUFACTURER: ROTHANA HEAVY ENGINEERING</div>
+                    </div>
+                    <div class="flex flex-col md:flex-row">
+                        <div class="md:w-72 lg:w-96 shrink-0 img-container overflow-hidden border-b md:border-b-0 md:border-r border-[#222]" style="min-height:240px">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/republic-attack-gunship-main_16bc9922.jpeg" alt="LAAT Gunship" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/600x400/050505/888?text=LAAT+GUNSHIP'">
                         </div>
-                        <div class="p-4">
-                            <h4 class="font-bold text-white display-font text-lg mb-1">IMPERIAL AT-TE</h4>
-                            <p class="text-xs text-gray-400">Modernized GAR classic. Six legs provide extreme stability. Fully environmentally sealed against toxic atmospheres.</p>
+                        <div class="flex-1 flex flex-col">
+                            <div class="p-1 flex-1">
+                                <table class="ship-stat-table w-full">
+                                    <tr><th>LENGTH</th><td>17.4 Meters</td><th>WIDTH</th><td>17.1 Meters</td></tr>
+                                    <tr><th>CREW</th><td>1 Pilot + 1 Co-Pilot</td><th>TROOPS</th><td>30 Stormtroopers</td></tr>
+                                    <tr><th>ARMAMENT</th><td colspan="3">2x Wing Laser Cannons, 1x Chin Dual Laser Turret, 4x Composite Beam Lasers, 2x Missile Pods (8 Missiles Each)</td></tr>
+                                    <tr><th>ARMOR/SHIELDS</th><td colspan="3">Closed Canopy Redesign / Thickened Hull Plating / Medium Deflector Shield</td></tr>
+                                    <tr><th>SPECIAL FEATURES</th><td colspan="3">Pressurized Cabin (Low-Atmosphere Capable) / Magnetic Boarding Locks / Side-Door Rapid Deploy</td></tr>
+                                </table>
+                            </div>
+                            <div class="p-4 border-t border-[#1e1e1e]">
+                                <p class="text-gray-400 text-sm leading-relaxed">The Imperium's LAAT/i modernization retains the proven Rothana airframe but addresses decades of combat feedback with substantive upgrades. The most visible change is the closed canopy — the original Republic-era LAAT/i used an open-bay design that left pilots exposed to infantry fire during low-altitude insertion runs, a vulnerability that cost the GAR enormous numbers of experienced pilots. The Imperium's variant fully encloses the cockpit in armored transparisteel and extends this protection to the troop bay with reinforced sidewall plating. The missile pods have been upgraded to carry both unguided rocket salvos for area suppression and heat-seeking variants for engaging enemy speeder bikes and light vehicles. The LAAT/i remains one of the most flexible battlefield assets in the Imperium's inventory: it can deliver a full squad of Stormtroopers directly into a contested LZ while providing its own fire support during the insertion run — a capability no other Imperium ground vehicle can replicate.</p>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- AT-ST -->
-                    <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a]">
-                        <div class="h-48 img-container overflow-hidden border-b border-[#333]">
-                            <img src="https://lumiere-a.akamaihd.net/v1/images/first-order-at-st-main_4070a7df.jpeg" alt="Imperial AT-ST" class="w-full h-full object-cover object-top" onerror="this.src='https://placehold.co/400x300/111/fff?text=IMPERIAL+AT-ST'">
-                        </div>
-                        <div class="p-4">
-                            <h4 class="font-bold text-white display-font text-lg mb-1">IMPERIAL AT-ST</h4>
-                            <p class="text-xs text-gray-400">Redesigned scout walker featuring reinforced leg armor and upgraded twin blaster cannons for urban pacification.</p>
-                        </div>
-                    </div>
-
-                    <!-- LAAT -->
-                    <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a]">
-                        <div class="h-48 img-container overflow-hidden border-b border-[#333]">
-                            <img src="https://lumiere-a.akamaihd.net/v1/images/republic-attack-gunship-main_16bc9922.jpeg" alt="Imperial LAAT" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/400x300/111/fff?text=IMPERIAL+LAAT'">
-                        </div>
-                        <div class="p-4">
-                            <h4 class="font-bold text-white display-font text-lg mb-1">IMPERIAL LAAT</h4>
-                            <p class="text-xs text-gray-400">Premier gunship for rapid deployment. Redesigned with a closed-canopy and thickened hull plating.</p>
-                        </div>
-                    </div>
-
-                    <!-- Hover Tank -->
-                    <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a]">
-                        <div class="h-48 img-container overflow-hidden border-b border-[#333]">
-                            <img src="https://lumiere-a.akamaihd.net/v1/images/imperial-combat-assault-tank-main_ebf32b84.jpeg" alt="Imperial Hover Tank" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/400x300/111/fff?text=HOVER+TANK'">
-                        </div>
-                        <div class="p-4">
-                            <h4 class="font-bold text-white display-font text-lg mb-1">IMPERIAL HOVER TANK</h4>
-                            <p class="text-xs text-gray-400">Fast, heavily armored repulsorlift tank. Excels in rapid flanking maneuvers and supporting infantry pushes.</p>
-                        </div>
-                    </div>
-
-                    <!-- AT-HA (Custom) -->
-                    <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a]">
-                        <div class="h-48 img-container overflow-hidden border-b border-[#333]">
-                            <!-- Using AT-AT or AT-M6 as a visual placeholder for heavy artillery walker -->
-                            <img src="https://lumiere-a.akamaihd.net/v1/images/first-order-heavy-assault-walker-main_1a5511b8.jpeg" alt="Imperial AT-HA" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/400x300/111/fff?text=AT-HA'">
-                        </div>
-                        <div class="p-4">
-                            <h4 class="font-bold text-white display-font text-lg mb-1">IMPERIAL AT-HA</h4>
-                            <p class="text-xs text-gray-400">All Terrain Heavy Artillery. A massive quadrupedal walker designed to bombard fortifications from beyond visual range.</p>
-                        </div>
-                    </div>
-
-                    <!-- AV-7 (Custom) -->
-                    <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a]">
-                        <div class="h-48 img-container overflow-hidden border-b border-[#333]">
-                            <!-- Using general artillery placeholder -->
-                            <img src="https://lumiere-a.akamaihd.net/v1/images/spmath-main_d4d5e2e8.jpeg" alt="Imperial AV-7 Anti Vehicle" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/400x300/111/fff?text=AV-7+ARTILLERY'">
-                        </div>
-                        <div class="p-4">
-                            <h4 class="font-bold text-white display-font text-lg mb-1">IMPERIAL AV-7</h4>
-                            <p class="text-xs text-gray-400">Self-propelled anti-vehicle artillery. Deploys heavy ground stabilizers to fire devastating armor-piercing shells.</p>
-                        </div>
-                    </div>
-
                 </div>
-            </div>
-            
-            <div class="text-center pb-10 text-gray-600 mono-font text-xs">
-                * CUSTOM DESIGNATED UNITS (AT-HA, ROYAL TROOPER, ETC.) ARE PENDING FINAL VISUAL CLASSIFICATION UPDATES IN DATABANKS *
+
+            </div><!-- end armory entries -->
+
+            <div class="text-center pb-10 text-gray-700 mono-font text-xs border-t border-[#1a1a1a] pt-6">
+                ◈ GALACTIC IMPERIUM HIGH COMMAND — AUTHORIZED DATABASE ACCESS ONLY ◈<br>
+                UNAUTHORIZED DISTRIBUTION IS PUNISHABLE BY IMPERIAL TRIBUNAL — 17 ABY
             </div>
         </section>
 
     </main>
 
     <script>
-        // Tab Switching Logic
         function switchTab(tabId) {
-            // Hide all contents
-            document.querySelectorAll('.tab-content').forEach(el => {
-                el.classList.remove('active');
-            });
-            // Show selected
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            
-            // Update active state in nav
-            document.querySelectorAll('.nav-link').forEach(el => {
-                el.classList.remove('active');
-            });
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
             event.currentTarget.classList.add('active');
-
-            // Scroll top
             document.querySelector('main').scrollTop = 0;
-
-            // Close mobile sidebar if open
-            if(window.innerWidth < 768) {
-                closeSidebar();
-            }
+            if(window.innerWidth < 768) closeSidebar();
         }
 
-        // Mobile Sidebar Logic
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebar-overlay');
         const menuBtn = document.getElementById('menu-toggle');
@@ -681,23 +1073,17 @@
         function openSidebar() {
             sidebar.classList.remove('-translate-x-full');
             overlay.classList.remove('hidden');
-            document.body.style.overflow = 'hidden'; // prevent background scrolling
+            document.body.style.overflow = 'hidden';
         }
-
         function closeSidebar() {
             sidebar.classList.add('-translate-x-full');
             overlay.classList.add('hidden');
-            document.body.style.overflow = ''; 
+            document.body.style.overflow = '';
         }
 
         menuBtn.addEventListener('click', () => {
-            if (sidebar.classList.contains('-translate-x-full')) {
-                openSidebar();
-            } else {
-                closeSidebar();
-            }
+            sidebar.classList.contains('-translate-x-full') ? openSidebar() : closeSidebar();
         });
-
         overlay.addEventListener('click', closeSidebar);
     </script>
 </body>
