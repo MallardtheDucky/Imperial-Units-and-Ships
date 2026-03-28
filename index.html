@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Galactic Imperium Database | 17 ABY</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Titillium+Web:wght@300;400;600;700&display=swap');
+
+        :root {
+            --imp-red: #d62828;
+            --imp-red-glow: rgba(214, 40, 40, 0.6);
+            --imp-dark: #050505;
+            --imp-surface: #121212;
+            --imp-surface-light: #1e1e1e;
+            --imp-border: #333;
+            --text-main: #e0e0e0;
+            --text-muted: #888;
+        }
+
+        body {
+            font-family: 'Titillium Web', sans-serif;
+            background-color: var(--imp-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        h1, h2, h3, h4, h5, .display-font {
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .mono-font {
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        /* Sci-Fi Cut Corners */
+        .cut-corner {
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
+        }
+        
+        .cut-corner-top {
+            clip-path: polygon(15px 0, 100% 0, 100% 100%, 0 100%, 0 15px);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--imp-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--imp-border); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--imp-red); }
+
+        .imp-card {
+            background: var(--imp-surface);
+            border: 1px solid var(--imp-border);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .imp-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 2px;
+            background: var(--imp-red);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .imp-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .imp-card:hover {
+            border-color: #555;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+        }
+
+        /* Navigation */
+        .nav-link {
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .nav-link.active {
+            color: white;
+            background: linear-gradient(90deg, rgba(214,40,40,0.15) 0%, transparent 100%);
+            border-left: 3px solid var(--imp-red);
+        }
+        
+        .nav-link.active i { color: var(--imp-red); }
+        
+        .nav-link:hover:not(.active) {
+            background: var(--imp-surface-light);
+            border-left: 3px solid var(--text-muted);
+        }
+
+        /* Tabs */
+        .tab-content {
+            display: none;
+            animation: slideFade 0.4s ease-out forwards;
+        }
+        .tab-content.active { display: block; }
+
+        @keyframes slideFade {
+            0% { opacity: 0; transform: translateY(15px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Image hover zoom */
+        .img-container img {
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .imp-card:hover .img-container img {
+            transform: scale(1.08);
+        }
+
+        /* Mobile Sidebar Transition */
+        #sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        /* Scanline Overlay */
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; w-full h-full;
+            width: 100vw; height: 100vh;
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+    <div class="scanlines"></div>
+
+    <!-- Mobile Header -->
+    <header class="md:hidden fixed top-0 w-full h-16 bg-[#0a0a0a] border-b border-[#333] z-50 flex items-center justify-between px-4">
+        <div class="flex items-center gap-3">
+            <i class="fa-brands fa-galactic-senate text-2xl text-[#d62828]"></i>
+            <span class="display-font font-bold text-lg text-white">IMPERIUM <span class="text-[#d62828]">OS</span></span>
+        </div>
+        <button id="menu-toggle" class="text-white hover:text-[#d62828] focus:outline-none p-2">
+            <i class="fa-solid fa-bars text-xl"></i>
+        </button>
+    </header>
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="fixed md:static inset-y-0 left-0 w-72 bg-[#0a0a0a] border-r border-[#222] z-40 transform -translate-x-full md:translate-x-0 flex flex-col pt-16 md:pt-0 h-full">
+        <div class="p-6 md:p-8 border-b border-[#222] hidden md:block text-center">
+            <i class="fa-brands fa-galactic-senate text-5xl text-[#d62828] mb-4 drop-shadow-[0_0_8px_rgba(214,40,40,0.6)]"></i>
+            <h1 class="text-3xl font-bold text-white display-font leading-none">GALACTIC<br>IMPERIUM</h1>
+            <div class="mt-3 inline-block border border-[#d62828] px-2 py-1 bg-[#d62828]/10 text-[#d62828] mono-font text-xs">
+                DATA_YEAR: 17 ABY
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-4 flex flex-col gap-1 px-2">
+            <button onclick="switchTab('overview')" class="nav-link active flex items-center gap-4 px-4 py-3 rounded-sm text-left text-sm display-font font-bold tracking-wider text-gray-400">
+                <i class="fa-solid fa-database w-5 text-center"></i> STATE OVERVIEW
+            </button>
+            <button onclick="switchTab('structure')" class="nav-link flex items-center gap-4 px-4 py-3 rounded-sm text-left text-sm display-font font-bold tracking-wider text-gray-400">
+                <i class="fa-solid fa-sitemap w-5 text-center"></i> MILITARY STRUCTURE
+            </button>
+            <button onclick="switchTab('templars')" class="nav-link flex items-center gap-4 px-4 py-3 rounded-sm text-left text-sm display-font font-bold tracking-wider text-gray-400">
+                <i class="fa-brands fa-sith w-5 text-center"></i> IMPERIAL TEMPLARS
+            </button>
+            <button onclick="switchTab('armory')" class="nav-link flex items-center gap-4 px-4 py-3 rounded-sm text-left text-sm display-font font-bold tracking-wider text-gray-400">
+                <i class="fa-solid fa-crosshairs w-5 text-center"></i> IMPERIAL ARMORY
+            </button>
+        </nav>
+
+        <div class="p-4 border-t border-[#222] text-center">
+            <p class="mono-font text-[10px] text-gray-500">AUTHORIZATION: HIGH COMMAND<br>GLORY TO EMPEROR THORNE</p>
+        </div>
+    </aside>
+
+    <!-- Overlay for mobile sidebar -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/80 z-30 hidden md:hidden backdrop-blur-sm"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 h-full overflow-y-auto bg-transparent relative pt-16 md:pt-0 scroll-smooth">
+        
+        <!-- OVERVIEW TAB -->
+        <section id="overview" class="tab-content active p-4 md:p-10 max-w-7xl mx-auto">
+            <div class="w-full h-[300px] md:h-[400px] relative mb-8 cut-corner border border-[#333]">
+                <!-- Using the provided banner image -->
+                <img src="image_1ddf2c.jpg" alt="Galactic Imperium" class="w-full h-full object-cover opacity-50">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/60 to-transparent"></div>
+                <div class="absolute bottom-0 left-0 p-6 md:p-10 w-full">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="w-2 h-2 bg-[#d62828] animate-pulse"></span>
+                        <span class="mono-font text-[#d62828] text-xs">ARCHIVE // FILE_01</span>
+                    </div>
+                    <h2 class="text-4xl md:text-6xl font-bold text-white display-font drop-shadow-lg">THE NEW ORDER REBORN</h2>
+                    <p class="text-gray-300 max-w-3xl mt-2 text-sm md:text-base leading-relaxed">
+                        Under the visionary leadership of Emperor Draxus Thorne, the Galactic Imperium has risen from the ashes to bring absolute order to the Northern Outer Rim.
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+                <!-- Card 1 -->
+                <div class="imp-card p-6 md:p-8 cut-corner">
+                    <i class="fa-solid fa-crown text-3xl text-[#d62828] mb-4"></i>
+                    <h3 class="text-2xl font-bold text-white display-font mb-3">Rise of Draxus Thorne</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                        Following Palpatine's death and Operation: Cinder, the Empire shattered. By 9 ABY, Moff Gideon's demise created a vacuum. Draxus Thorne, an Admiral-turned-Moff, seized the Shadow Council by poisoning dissenting warlords on Bastion, framing a survivor, and uniting the remnants.
+                    </p>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Thorne purged the incompetent, reclaimed Mandalore, executed remaining resistance (including Din Djarin), and declared himself Emperor. 
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="imp-card p-6 md:p-8 cut-corner">
+                    <i class="fa-solid fa-scale-unbalanced text-3xl text-[#d62828] mb-4"></i>
+                    <h3 class="text-2xl font-bold text-white display-font mb-3">A Pragmatic Doctrine</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                        Thorne discarded the Tarkin Doctrine and scaled back xenophobia. The <strong>Imperial Army</strong> became a standardized defense force open to all species, while the elite <strong>Stormtrooper Corps</strong> remained restricted to humans and humanoids.
+                    </p>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        To fuel expansion, uninhabited worlds are strip-mined using automated Ore Crawlers (World Devastators), rapidly feeding the Imperium's modernized war machine.
+                    </p>
+                </div>
+
+                <!-- Card 3 Full Width -->
+                <div class="imp-card p-6 md:p-8 cut-corner lg:col-span-2 border-l-4 border-l-[#d62828]">
+                    <div class="flex items-center gap-4 mb-4">
+                        <i class="fa-solid fa-jedi text-3xl text-gray-600"></i>
+                        <h3 class="text-2xl font-bold text-white display-font">The Fall of Skywalker (12 ABY)</h3>
+                    </div>
+                    <p class="text-gray-300 text-sm md:text-base leading-relaxed mb-4">
+                        Recognizing the threat of Luke Skywalker's progressive New Jedi Order on Yavin 4, Emperor Thorne launched a massive, jammer-supported invasion. To save his students from orbital bombardment and overwhelming infantry, Skywalker surrendered.
+                    </p>
+                    <p class="text-gray-300 text-sm md:text-base leading-relaxed">
+                        Thorne took Skywalker to Bastion and publicly executed the Jedi Grandmaster via decapitation. This bold act crippled southern remnant morale, driving thousands into Thorne's ranks. Now, in 17 ABY, the galaxy is locked in a tense Cold War between the Imperium and the recovering New Republic.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MILITARY STRUCTURE TAB -->
+        <section id="structure" class="tab-content p-4 md:p-10 max-w-5xl mx-auto">
+            <div class="mb-10 text-center md:text-left">
+                <h2 class="text-3xl md:text-5xl font-bold text-white display-font mb-2">MILITARY STRUCTURE</h2>
+                <p class="text-gray-400">Standardized US-Doctrine Equivalent for Imperial Forces</p>
+            </div>
+
+            <div class="relative border-l border-[#333] ml-4 md:ml-8 space-y-8 pb-8">
+                
+                <!-- Unit Card -->
+                <div class="relative pl-8 md:pl-12">
+                    <div class="absolute -left-3.5 top-2 w-7 h-7 bg-[#121212] border-2 border-[#d62828] rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-users text-[#d62828] text-xs"></i>
+                    </div>
+                    <div class="imp-card p-5 cut-corner-top">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-2">
+                            <h3 class="text-xl font-bold text-white display-font">SQUAD</h3>
+                            <span class="mono-font text-[#d62828] text-sm bg-[#d62828]/10 px-2 py-1">10-12 TROOPERS</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-2">The smallest tactical element. Composed of specialized troopers designed to operate independently. Includes heavy weapons and comms.</p>
+                        <p class="text-xs text-gray-500 mono-font">LEADER: CORPORAL / SERGEANT</p>
+                    </div>
+                </div>
+
+                <!-- Unit Card -->
+                <div class="relative pl-8 md:pl-12">
+                    <div class="absolute -left-3.5 top-2 w-7 h-7 bg-[#121212] border-2 border-[#d62828] rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-layer-group text-[#d62828] text-xs"></i>
+                    </div>
+                    <div class="imp-card p-5 cut-corner-top">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-2">
+                            <h3 class="text-xl font-bold text-white display-font">PLATOON</h3>
+                            <span class="mono-font text-[#d62828] text-sm bg-[#d62828]/10 px-2 py-1">~40 TROOPERS (4 SQUADS)</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-2">The basic unit for localized assaults and garrison duties. Supported by light repulsorlift vehicles.</p>
+                        <p class="text-xs text-gray-500 mono-font">LEADER: LIEUTENANT</p>
+                    </div>
+                </div>
+
+                <!-- Unit Card -->
+                <div class="relative pl-8 md:pl-12">
+                    <div class="absolute -left-3.5 top-2 w-7 h-7 bg-[#121212] border-2 border-[#d62828] rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-building-shield text-[#d62828] text-xs"></i>
+                    </div>
+                    <div class="imp-card p-5 cut-corner-top">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-2">
+                            <h3 class="text-xl font-bold text-white display-font">COMPANY</h3>
+                            <span class="mono-font text-[#d62828] text-sm bg-[#d62828]/10 px-2 py-1">~160 TROOPERS (4 PLATOONS)</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-2">A highly self-sufficient unit capable of holding key tactical objectives. Often paired with armor attachments.</p>
+                        <p class="text-xs text-gray-500 mono-font">LEADER: CAPTAIN</p>
+                    </div>
+                </div>
+
+                <!-- Unit Card -->
+                <div class="relative pl-8 md:pl-12">
+                    <div class="absolute -left-3.5 top-2 w-7 h-7 bg-[#121212] border-2 border-[#d62828] rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-chess-rook text-[#d62828] text-xs"></i>
+                    </div>
+                    <div class="imp-card p-5 cut-corner-top">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-2">
+                            <h3 class="text-xl font-bold text-white display-font">BATTALION</h3>
+                            <span class="mono-font text-[#d62828] text-sm bg-[#d62828]/10 px-2 py-1">600-800 TROOPERS</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-2">Primary maneuver unit for planetary invasions. Boasts dedicated artillery (AV-7) support.</p>
+                        <p class="text-xs text-gray-500 mono-font">LEADER: MAJOR / LT. COLONEL</p>
+                    </div>
+                </div>
+
+                <!-- Unit Card -->
+                <div class="relative pl-8 md:pl-12">
+                    <div class="absolute -left-3.5 top-2 w-7 h-7 bg-[#121212] border-2 border-[#d62828] rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-shield-halved text-[#d62828] text-xs"></i>
+                    </div>
+                    <div class="imp-card p-5 cut-corner-top">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-2">
+                            <h3 class="text-xl font-bold text-white display-font">REGIMENT</h3>
+                            <span class="mono-font text-[#d62828] text-sm bg-[#d62828]/10 px-2 py-1">~2,500-3,000 TROOPERS</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-2">Massive combat element assigned to secure continents or garrison fortress worlds.</p>
+                        <p class="text-xs text-gray-500 mono-font">LEADER: COLONEL</p>
+                    </div>
+                </div>
+
+                <!-- Unit Card -->
+                <div class="relative pl-8 md:pl-12">
+                    <div class="absolute -left-3.5 top-2 w-7 h-7 bg-[#d62828] border-2 border-[#d62828] rounded-full flex items-center justify-center shadow-[0_0_10px_#d62828]">
+                        <i class="fa-brands fa-empire text-white text-xs"></i>
+                    </div>
+                    <div class="imp-card p-5 cut-corner-top border border-[#d62828]/50 bg-[#d62828]/5">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-2">
+                            <h3 class="text-xl font-bold text-white display-font">LEGION <span class="text-gray-500 text-base">(DIVISION EQ.)</span></h3>
+                            <span class="mono-font text-white text-sm bg-[#d62828] px-2 py-1 shadow-lg">10,000+ TROOPERS</span>
+                        </div>
+                        <p class="text-gray-300 text-sm mb-2">The iconic Imperial combat formation. Fully self-sustaining with integrated armor (AT-TE, AT-HA), air support (LAAT), and logistics. The fist of Emperor Thorne.</p>
+                        <p class="text-xs text-[#d62828] mono-font font-bold">LEADER: BRIGADIER / MAJOR GENERAL</p>
+                    </div>
+                </div>
+
+                <!-- Unit Card -->
+                <div class="relative pl-8 md:pl-12">
+                    <div class="absolute -left-3.5 top-2 w-7 h-7 bg-[#121212] border-2 border-[#d62828] rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-globe text-[#d62828] text-xs"></i>
+                    </div>
+                    <div class="imp-card p-5 cut-corner-top">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-2">
+                            <h3 class="text-xl font-bold text-white display-font">SYSTEMS ARMY / SECTOR ARMY</h3>
+                            <span class="mono-font text-[#d62828] text-sm bg-[#d62828]/10 px-2 py-1">50,000 - 200,000+ TROOPERS</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-2">Strategic level command structures managing theaters of war across multiple star systems and sectors.</p>
+                        <p class="text-xs text-gray-500 mono-font">LEADER: LT. GENERAL / GENERAL</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TEMPLARS TAB -->
+        <section id="templars" class="tab-content p-4 md:p-10 max-w-6xl mx-auto">
+            <div class="flex flex-col md:flex-row items-start md:items-center gap-6 mb-10">
+                <div class="w-20 h-20 bg-[#111] border border-[#d62828] rounded-full flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(214,40,40,0.3)]">
+                    <i class="fa-brands fa-sith text-5xl text-[#d62828]"></i>
+                </div>
+                <div>
+                    <h2 class="text-3xl md:text-5xl font-bold text-white display-font leading-tight">ORDER OF THE IMPERIAL TEMPLARS</h2>
+                    <p class="mono-font text-[#d62828] mt-1">HQ: THE GREAT TEMPLE, YAVIN 4</p>
+                </div>
+            </div>
+            
+            <div class="imp-card p-6 md:p-10 mb-10 cut-corner bg-gradient-to-br from-[#121212] to-[#2a0808] border-[#d62828]/30 border">
+                <h3 class="text-2xl font-bold text-white mb-4 display-font">The Emperor's Shadow Hand</h3>
+                <div class="space-y-4 text-sm md:text-base text-gray-300">
+                    <p>
+                        Formed in 12 ABY by Emperor Thorne and a mysterious dark side force-sensitive mercenary (trained by an Order 66 survivor), the Imperial Templars serve as the dark counter-weight to Luke Skywalker's progressive New Jedi Order.
+                    </p>
+                    <p>
+                        Unlike the chaotic Sith of old, the Templars are heavily regimented. They act as the Imperium's ultimate enforcers and peacekeepers. They hunt down rogue warlords, eliminate terrorist cells loyal to Palpatine's fanaticism, and possess the specialized training required to kill Jedi.
+                    </p>
+                    <p>
+                        Their ranks are filled with former Imperial Inquisitors, fallen Dark Jedi, and new dark side acolytes recruited from across Imperium space. Their base of operations is the very temple they violently seized from Luke Skywalker on Yavin 4.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Templar Specific Units -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="imp-card cut-corner flex flex-col h-full bg-[#0a0a0a]">
+                    <div class="h-56 img-container overflow-hidden border-b border-[#333] relative">
+                        <img src="https://lumiere-a.akamaihd.net/v1/images/sith-trooper-main_69917bd9.jpeg" alt="Templar Trooper" class="w-full h-full object-cover object-top opacity-80" onerror="this.src='https://placehold.co/600x400/111/d62828?text=TEMPLAR+TROOPER'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent"></div>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col">
+                        <h4 class="text-xl font-bold text-white display-font tracking-wide mb-1">TEMPLAR TROOPER</h4>
+                        <span class="mono-font text-xs text-[#d62828] mb-3 border border-[#d62828]/30 w-fit px-2 py-0.5">ANTI-JEDI INFANTRY</span>
+                        <p class="text-gray-400 text-sm leading-relaxed mt-auto">
+                            Elite infantry units attached directly to the Templar Order. Equipped with specialized force-resistant armor weaving, sonic weaponry, and slugthrowers explicitly chosen to bypass lightsaber deflection. They overwhelm force-sensitive targets through sheer volume of unblockable fire.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="imp-card cut-corner flex flex-col h-full bg-[#0a0a0a]">
+                    <div class="h-56 img-container overflow-hidden border-b border-[#333] relative">
+                        <img src="https://lumiere-a.akamaihd.net/v1/images/emperors-royal-guard-main_41db078a.jpeg" alt="Royal Shadow Guard" class="w-full h-full object-cover object-top opacity-80" onerror="this.src='https://placehold.co/600x400/111/d62828?text=ROYAL+SHADOW+GUARD'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent"></div>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col">
+                        <h4 class="text-xl font-bold text-white display-font tracking-wide mb-1">ROYAL SHADOW GUARD</h4>
+                        <span class="mono-font text-xs text-[#d62828] mb-3 border border-[#d62828]/30 w-fit px-2 py-0.5">ELITE ASSASSINS</span>
+                        <p class="text-gray-400 text-sm leading-relaxed mt-auto">
+                            Covert operatives and assassins serving Emperor Thorne. Possessing latent dark side abilities trained by the Templars, they wield lightsaber pikes and utilize advanced cloaking technology. They are the unseen knives in the dark.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ARMORY TAB -->
+        <section id="armory" class="tab-content p-4 md:p-10 max-w-7xl mx-auto">
+            <div class="mb-10">
+                <h2 class="text-3xl md:text-5xl font-bold text-white display-font mb-2">IMPERIAL ARMORY</h2>
+                <p class="text-gray-400">Visual database of the primary vehicles, vessels, and infantry.</p>
+            </div>
+
+            <!-- INFANTRY -->
+            <div class="mb-12">
+                <div class="flex items-center gap-3 mb-6 border-b border-[#333] pb-2">
+                    <i class="fa-solid fa-person-rifle text-[#d62828] text-xl"></i>
+                    <h3 class="text-2xl font-bold text-white display-font">INFANTRY CORPS</h3>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                    <!-- Standard Stormtrooper (FO Look) -->
+                    <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a]">
+                        <div class="h-48 img-container overflow-hidden border-b border-[#333]">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/First-Order-Stormtrooper_eb9ceee8.jpeg" alt="Imperial Stormtrooper" class="w-full h-full object-cover object-top" onerror="this.src='https://placehold.co/400x300/111/fff?text=STORMTROOPER'">
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-bold text-white display-font text-lg leading-tight mb-1">IMPERIAL STORMTROOPER</h4>
+                            <p class="text-xs text-gray-400">Modernized armor suite based on First Order aesthetics. Forms the backbone of the elite human/humanoid offensive force.</p>
+                        </div>
+                    </div>
+
+                    <!-- Scout Trooper -->
+                    <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a]">
+                        <div class="h-48 img-container overflow-hidden border-b border-[#333]">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/scout-trooper-main_64860b74.jpeg" alt="Imperial Scout Trooper" class="w-full h-full object-cover object-top" onerror="this.src='https://placehold.co/400x300/111/fff?text=SCOUT+TROOPER'">
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-bold text-white display-font text-lg leading-tight mb-1">SCOUT TROOPER</h4>
+                            <p class="text-xs text-gray-400">Lightly armored infantry utilized for reconnaissance, sniping, and rapid speeder bike traversal.</p>
+                        </div>
+                    </div>
+
+                    <!-- Death Trooper -->
+                    <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a]">
+                        <div class="h-48 img-container overflow-hidden border-b border-[#333]">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/death-trooper-main_98ddb5bf.jpeg" alt="Death Trooper" class="w-full h-full object-cover object-top" onerror="this.src='https://placehold.co/400x300/111/fff?text=DEATH+TROOPER'">
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-bold text-white display-font text-lg leading-tight mb-1">DEATH TROOPER</h4>
+                            <p class="text-xs text-gray-400">Classified, physically augmented operatives. Serve as bodyguards for Moffs and execute ruthless black-ops strike missions.</p>
+                        </div>
+                    </div>
+
+                    <!-- Praetorian Guard -->
+                    <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a]">
+                        <div class="h-48 img-container overflow-hidden border-b border-[#333]">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/elite-praetorian-guard-main_e65d8dd9.jpeg" alt="Royal Pretorian Guard" class="w-full h-full object-cover object-top" onerror="this.src='https://placehold.co/400x300/111/d62828?text=PRAETORIAN+GUARD'">
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-bold text-[#d62828] display-font text-lg leading-tight mb-1">ROYAL PRAETORIAN GUARD</h4>
+                            <p class="text-xs text-gray-400">Emperor Thorne's ultimate protectors. Clad in heavy crimson plating impervious to glancing lightsaber blows.</p>
+                        </div>
+                    </div>
+
+                    <!-- Royal Trooper (Custom) -->
+                    <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a]">
+                        <div class="h-48 img-container overflow-hidden border-b border-[#333]">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/sith-jet-trooper-main_17349b6b.jpeg" alt="Royal Trooper" class="w-full h-full object-cover object-top" onerror="this.src='https://placehold.co/400x300/111/d62828?text=ROYAL+TROOPER'">
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-bold text-[#d62828] display-font text-lg leading-tight mb-1">ROYAL TROOPER</h4>
+                            <p class="text-xs text-gray-400">Prestigious heavy-infantry guard. Stationed exclusively on the capital world of Bastion and the Emperor's dreadnought.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NAVY -->
+            <div class="mb-12">
+                <div class="flex items-center gap-3 mb-6 border-b border-[#333] pb-2">
+                    <i class="fa-brands fa-space-awesome text-[#d62828] text-xl"></i>
+                    <h3 class="text-2xl font-bold text-white display-font">IMPERIAL NAVY</h3>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+                    
+                    <!-- Star Destroyer -->
+                    <div class="imp-card cut-corner lg:col-span-2 flex flex-col bg-[#0a0a0a]">
+                        <div class="h-64 img-container overflow-hidden border-b border-[#333] relative">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/First-Order-Star-Destroyer-Main_5b94bb71.jpeg" alt="Imperial III Star Destroyer" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/800x400/111/fff?text=IMP+III+STAR+DESTROYER'">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent"></div>
+                            <div class="absolute bottom-4 left-4">
+                                <span class="bg-[#d62828] text-white mono-font text-xs px-2 py-1">CAPITAL SHIP</span>
+                            </div>
+                        </div>
+                        <div class="p-5">
+                            <h4 class="font-bold text-white display-font text-2xl mb-2">IMPERIAL III STAR DESTROYER</h4>
+                            <p class="text-sm text-gray-400">
+                                The culmination of Imperial naval engineering. Integrates vast automation requiring 40% less crew than its predecessors. Features shielded command structures, advanced deflector arrays, and heavily modified octuple barbette turbolasers.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Small Ships Stack -->
+                    <div class="flex flex-col gap-4 md:gap-6">
+                        <!-- Nebulon B -->
+                        <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a] flex-1">
+                            <div class="h-32 img-container overflow-hidden border-b border-[#333]">
+                                <img src="https://lumiere-a.akamaihd.net/v1/images/nebulon-b-frigate-main_474f32e2.jpeg" alt="Imperial Nebulon B" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/400x200/111/fff?text=NEBULON-B'">
+                            </div>
+                            <div class="p-3">
+                                <h4 class="font-bold text-white display-font text-lg mb-1">IMPERIAL NEBULON-B</h4>
+                                <p class="text-xs text-gray-400">Heavily armored refit of the classic frigate, serving as the premier anti-starfighter escort.</p>
+                            </div>
+                        </div>
+
+                        <!-- TIE/fo -->
+                        <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a] flex-1">
+                            <div class="h-32 img-container overflow-hidden border-b border-[#333]">
+                                <img src="https://lumiere-a.akamaihd.net/v1/images/First-Order-TIE-Fighter_f2e825a1.jpeg" alt="TIE/fo Fighter" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/400x200/111/fff?text=TIE/FO'">
+                            </div>
+                            <div class="p-3">
+                                <h4 class="font-bold text-white display-font text-lg mb-1">TIE/fo SPACE SUPERIORITY</h4>
+                                <p class="text-xs text-gray-400">Modernized TIE equipped with onboard deflector shields and a specialized sensor array.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- TIE/D -->
+                        <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a] flex-1">
+                            <div class="h-32 img-container overflow-hidden border-b border-[#333]">
+                                <img src="https://lumiere-a.akamaihd.net/v1/images/tie-striker-main_1739f7dc.jpeg" alt="TIE/D Automated Fighter" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/400x200/111/fff?text=TIE/D+AUTOMATED'">
+                            </div>
+                            <div class="p-3">
+                                <h4 class="font-bold text-white display-font text-lg mb-1">TIE/D AUTOMATED</h4>
+                                <p class="text-xs text-gray-400">Next-gen droid starfighter. Unburdened by life-support, maneuvering at G-forces fatal to organics.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GROUND ARMOR -->
+            <div class="mb-12">
+                <div class="flex items-center gap-3 mb-6 border-b border-[#333] pb-2">
+                    <i class="fa-solid fa-truck-monster text-[#d62828] text-xl"></i>
+                    <h3 class="text-2xl font-bold text-white display-font">GROUND ARMOR & SUPPORT</h3>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    
+                    <!-- AT-TE -->
+                    <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a]">
+                        <div class="h-48 img-container overflow-hidden border-b border-[#333]">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/AT-TE-con_5da149c4.jpeg" alt="Imperial AT-TE" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300/111/fff?text=IMPERIAL+AT-TE'">
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-bold text-white display-font text-lg mb-1">IMPERIAL AT-TE</h4>
+                            <p class="text-xs text-gray-400">Modernized GAR classic. Six legs provide extreme stability. Fully environmentally sealed against toxic atmospheres.</p>
+                        </div>
+                    </div>
+
+                    <!-- AT-ST -->
+                    <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a]">
+                        <div class="h-48 img-container overflow-hidden border-b border-[#333]">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/first-order-at-st-main_4070a7df.jpeg" alt="Imperial AT-ST" class="w-full h-full object-cover object-top" onerror="this.src='https://placehold.co/400x300/111/fff?text=IMPERIAL+AT-ST'">
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-bold text-white display-font text-lg mb-1">IMPERIAL AT-ST</h4>
+                            <p class="text-xs text-gray-400">Redesigned scout walker featuring reinforced leg armor and upgraded twin blaster cannons for urban pacification.</p>
+                        </div>
+                    </div>
+
+                    <!-- LAAT -->
+                    <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a]">
+                        <div class="h-48 img-container overflow-hidden border-b border-[#333]">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/republic-attack-gunship-main_16bc9922.jpeg" alt="Imperial LAAT" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/400x300/111/fff?text=IMPERIAL+LAAT'">
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-bold text-white display-font text-lg mb-1">IMPERIAL LAAT</h4>
+                            <p class="text-xs text-gray-400">Premier gunship for rapid deployment. Redesigned with a closed-canopy and thickened hull plating.</p>
+                        </div>
+                    </div>
+
+                    <!-- Hover Tank -->
+                    <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a]">
+                        <div class="h-48 img-container overflow-hidden border-b border-[#333]">
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/imperial-combat-assault-tank-main_ebf32b84.jpeg" alt="Imperial Hover Tank" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/400x300/111/fff?text=HOVER+TANK'">
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-bold text-white display-font text-lg mb-1">IMPERIAL HOVER TANK</h4>
+                            <p class="text-xs text-gray-400">Fast, heavily armored repulsorlift tank. Excels in rapid flanking maneuvers and supporting infantry pushes.</p>
+                        </div>
+                    </div>
+
+                    <!-- AT-HA (Custom) -->
+                    <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a]">
+                        <div class="h-48 img-container overflow-hidden border-b border-[#333]">
+                            <!-- Using AT-AT or AT-M6 as a visual placeholder for heavy artillery walker -->
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/first-order-heavy-assault-walker-main_1a5511b8.jpeg" alt="Imperial AT-HA" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/400x300/111/fff?text=AT-HA'">
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-bold text-white display-font text-lg mb-1">IMPERIAL AT-HA</h4>
+                            <p class="text-xs text-gray-400">All Terrain Heavy Artillery. A massive quadrupedal walker designed to bombard fortifications from beyond visual range.</p>
+                        </div>
+                    </div>
+
+                    <!-- AV-7 (Custom) -->
+                    <div class="imp-card cut-corner flex flex-col bg-[#0a0a0a]">
+                        <div class="h-48 img-container overflow-hidden border-b border-[#333]">
+                            <!-- Using general artillery placeholder -->
+                            <img src="https://lumiere-a.akamaihd.net/v1/images/spmath-main_d4d5e2e8.jpeg" alt="Imperial AV-7 Anti Vehicle" class="w-full h-full object-cover object-center" onerror="this.src='https://placehold.co/400x300/111/fff?text=AV-7+ARTILLERY'">
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-bold text-white display-font text-lg mb-1">IMPERIAL AV-7</h4>
+                            <p class="text-xs text-gray-400">Self-propelled anti-vehicle artillery. Deploys heavy ground stabilizers to fire devastating armor-piercing shells.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            
+            <div class="text-center pb-10 text-gray-600 mono-font text-xs">
+                * CUSTOM DESIGNATED UNITS (AT-HA, ROYAL TROOPER, ETC.) ARE PENDING FINAL VISUAL CLASSIFICATION UPDATES IN DATABANKS *
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            // Hide all contents
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            // Show selected
+            document.getElementById(tabId).classList.add('active');
+            
+            // Update active state in nav
+            document.querySelectorAll('.nav-link').forEach(el => {
+                el.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            // Scroll top
+            document.querySelector('main').scrollTop = 0;
+
+            // Close mobile sidebar if open
+            if(window.innerWidth < 768) {
+                closeSidebar();
+            }
+        }
+
+        // Mobile Sidebar Logic
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        const menuBtn = document.getElementById('menu-toggle');
+
+        function openSidebar() {
+            sidebar.classList.remove('-translate-x-full');
+            overlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // prevent background scrolling
+        }
+
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+            document.body.style.overflow = ''; 
+        }
+
+        menuBtn.addEventListener('click', () => {
+            if (sidebar.classList.contains('-translate-x-full')) {
+                openSidebar();
+            } else {
+                closeSidebar();
+            }
+        });
+
+        overlay.addEventListener('click', closeSidebar);
+    </script>
+</body>
+</html>
